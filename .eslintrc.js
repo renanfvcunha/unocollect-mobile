@@ -19,6 +19,9 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint', 'react-hooks', 'prettierx'],
   settings: {
+    'import/resolver': {
+      typescript: {},
+    },
     prettierx: {
       options: {
         usePrettierrc: true,
@@ -28,5 +31,13 @@ module.exports = {
   rules: {
     'react/style-prop-object': 'off',
     'react/jsx-filename-extension': ['warn', { extensions: ['.tsx'] }],
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
   },
 };
