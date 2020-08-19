@@ -9,8 +9,7 @@ export const loginRequest = (username: string, password: string): Action =>
 export const loginSuccess = (token: string, user: User): Action =>
   action(AuthTypes.LOGIN_SUCCESS, { token, user });
 
-export const loginFailure = (errorMsg: string): Action =>
-  action(AuthTypes.LOGIN_FAILURE, { errorMsg });
+export const loginFailure = (): Action => action(AuthTypes.LOGIN_FAILURE);
 
 export const setErrorFalse = (): Action => action(AuthTypes.SET_ERROR_FALSE);
 

@@ -1,4 +1,5 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { Alert } from 'react-native';
 import { AnyAction } from 'redux';
 import { AxiosResponse } from 'axios';
 
@@ -33,7 +34,17 @@ export function* login({ payload }: Payload) {
 
     yield put(loginSuccess(token, user));
   } catch (err) {
-    yield put(loginFailure(err.response.data.msg));
+    if (err.response) {
+      Alert.alert('Erro', err.response.data.msg);
+      yield put(loginFailure());
+    } else if (err.message === 'Network Error') {
+      Alert.alert(
+        'Erro',
+        'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+      );
+    } else {
+      Alert.alert('Erro', err);
+    }
   }
 }
 

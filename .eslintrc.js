@@ -31,6 +31,7 @@ module.exports = {
   rules: {
     'react/style-prop-object': 'off',
     'react/jsx-filename-extension': ['warn', { extensions: ['.tsx'] }],
+    'react/jsx-one-expression-per-line': 'off',
     'import/extensions': [
       'error',
       'ignorePackages',

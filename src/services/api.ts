@@ -1,7 +1,15 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 
-const api = axios.create({
-  baseURL: process.env.API_DEV_URL,
-});
+let api: AxiosInstance;
+
+if (__DEV__) {
+  api = axios.create({
+    baseURL: process.env.API_DEV_URL,
+  });
+} else {
+  api = axios.create({
+    baseURL: process.env.API_PROD_URL,
+  });
+}
 
 export default api;
