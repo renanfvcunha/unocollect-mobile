@@ -39,7 +39,7 @@ if (__DEV__ && tron.createSagaMonitor) {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 /**
- * Criando o store principal do Redux utilizando o
+ * Criando o store principal do Redux utilizando
  * Reactotron para desenvolvimento
  */
 let store: Store;
