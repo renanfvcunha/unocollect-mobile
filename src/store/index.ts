@@ -5,11 +5,13 @@ import { persistStore, persistReducer } from 'redux-persist';
 
 import tron from '../config/ReactotronConfig';
 import { AuthState } from './modules/auth/types';
+import { FormsState } from './modules/forms/types';
 import rootReducer from './modules/rootReducer';
 import rootSaga from './modules/rootSaga';
 
 export interface ApplicationState {
   auth: AuthState;
+  forms: FormsState;
 }
 
 /**
@@ -18,7 +20,7 @@ export interface ApplicationState {
 const persistConfig = {
   key: 'unoCollect',
   storage: AsyncStorage,
-  whitelist: ['auth'],
+  whitelist: ['auth', 'forms'],
 };
 
 /**

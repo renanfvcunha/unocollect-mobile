@@ -36,7 +36,6 @@ export function* login({ payload }: Payload) {
   } catch (err) {
     if (err.response) {
       Alert.alert('Erro', err.response.data.msg);
-      yield put(loginFailure());
     } else if (err.message === 'Network Error') {
       Alert.alert(
         'Erro',
@@ -45,6 +44,7 @@ export function* login({ payload }: Payload) {
     } else {
       Alert.alert('Erro', err);
     }
+    yield put(loginFailure());
   }
 }
 
