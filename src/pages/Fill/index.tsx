@@ -8,14 +8,24 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import {} from '@react-navigation/native';
 import { launchCameraAsync, MediaTypeOptions } from 'expo-image-picker';
 import Constants from 'expo-constants';
 import { MaterialIcons as MdIcon } from '@expo/vector-icons';
 import { askAsync, CAMERA_ROLL } from 'expo-permissions';
+import PropTypes from 'prop-types';
 
 import styles from './styles';
+import { Form } from '../../store/modules/forms/types';
 
-const Fill: React.FC = () => {
+interface IForm {
+  route: {
+    params: Form;
+  };
+}
+
+const Fill: React.FC<IForm> = ({ route }) => {
+  const form = route.params;
   const [images, setImages] = useState<string[]>([]);
 
   const pickImage = async () => {
@@ -85,14 +95,23 @@ const Fill: React.FC = () => {
     getPermission();
   }, []);
 
+  const fields = [];
+  if (form.fields) {
+    for (let i = 0; i < form.fields.length; i += 1) {
+      fields.push(
+        <View key={form.fields[i].id} style={styles.textInput}>
+          <TextInput style={styles.input} placeholder={form.fields[i].name} />
+          <Text style={styles.inputDesc}>{form.fields[i].description}</Text>
+        </View>,
+      );
+    }
+  }
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.container}>
-        <Text style={styles.formName}>Formulário de Teste</Text>
-        <Text style={styles.formDesc}>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsa,
-          voluptas!
-        </Text>
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+      <View style={styles.content}>
+        <Text style={styles.formName}>{form.title}</Text>
+        <Text style={styles.formDesc}>{form.description}</Text>
 
         {/* <Button title="Adicionar Imagem" onPress={pickImage} /> */}
         <TouchableOpacity
@@ -105,35 +124,7 @@ const Fill: React.FC = () => {
         </TouchableOpacity>
         <View style={styles.imgArr}>{imagesField}</View>
 
-        <View style={styles.textInput}>
-          <TextInput style={styles.input} placeholder="Campo 1" />
-          <Text style={styles.inputDesc}>Descrição do campo 1</Text>
-        </View>
-
-        <View style={styles.textInput}>
-          <TextInput style={styles.input} placeholder="Campo 2" />
-          <Text style={styles.inputDesc}>Descrição do campo 2</Text>
-        </View>
-
-        <View style={styles.textInput}>
-          <TextInput style={styles.input} placeholder="Campo 3" />
-          <Text style={styles.inputDesc}>Descrição do campo 3</Text>
-        </View>
-
-        <View style={styles.textInput}>
-          <TextInput style={styles.input} placeholder="Campo 4" />
-          <Text style={styles.inputDesc}>Descrição do campo 4</Text>
-        </View>
-
-        <View style={styles.textInput}>
-          <TextInput style={styles.input} placeholder="Campo 5" />
-          <Text style={styles.inputDesc}>Descrição do campo 5</Text>
-        </View>
-
-        <View style={styles.textInput}>
-          <TextInput style={styles.input} placeholder="Campo 6" />
-          <Text style={styles.inputDesc}>Descrição do campo 6</Text>
-        </View>
+        {fields}
 
         <TouchableOpacity style={styles.subButton} activeOpacity={0.5}>
           <Text style={styles.subButtonText}>Enviar</Text>
@@ -141,6 +132,17 @@ const Fill: React.FC = () => {
       </View>
     </ScrollView>
   );
+};
+
+Fill.propTypes = {
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      fields: PropTypes.array.isRequired, // eslint-disable-line
+    }).isRequired,
+  }).isRequired,
 };
 
 export default Fill;

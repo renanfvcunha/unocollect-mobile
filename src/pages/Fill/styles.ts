@@ -2,10 +2,13 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    flex: 1,
     backgroundColor: '#e7e7e7',
+  },
+  content: {
     paddingTop: 16,
     paddingHorizontal: 8,
+    alignItems: 'center',
   },
   formName: {
     fontSize: 32,
