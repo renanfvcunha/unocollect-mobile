@@ -1,23 +1,42 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { AnyAction } from 'redux';
+import { Alert } from 'react-native';
 
 import api from '../../../services/api';
 import { FillsTypes } from './types';
 import { addFillSuccess, addFillFailure } from './actions';
+import tron from '../../../config/ReactotronConfig';
 
 export function* addFill({ payload }: AnyAction) {
   try {
+    if (tron.log) {
+      tron.log(payload);
+    }
+
     const response = yield call(
       api.post,
-      `fills/${payload.data.formId}`,
+      `fills/${payload.formId}`,
       payload.data,
+      {
+        headers: {
+          'content-type': 'multipart/formdata',
+        },
+      },
     );
 
-    alert(response.data.msg);
+    Alert.alert('', response.data.msg);
     yield put(addFillSuccess(response.data.msg));
   } catch (err) {
-    alert(err.response.data.msg);
-    yield put(addFillFailure());
+    if (err.message === 'Network Error') {
+      yield put(addFillFailure());
+      Alert.alert('Erro', 'Não foi possível conectar ao servidor.');
+    } else if (err.response) {
+      Alert.alert('Erro', err.response.data.msg);
+      yield put(addFillFailure());
+    } else {
+      Alert.alert('Erro', err);
+      yield put(addFillFailure());
+    }
   }
 }
 

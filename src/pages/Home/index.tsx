@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons as McIcon } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import styles from './styles';
 import { ApplicationState } from '../../store';
@@ -24,10 +25,6 @@ const Home: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getFormsRequest());
-  }, [dispatch]);
-
   const handleLogout = () => {
     Alert.alert('', 'Deseja sair da aplicação?', [
       {
@@ -41,6 +38,10 @@ const Home: React.FC = () => {
       },
     ]);
   };
+
+  useEffect(() => {
+    dispatch(getFormsRequest());
+  }, [dispatch]);
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>

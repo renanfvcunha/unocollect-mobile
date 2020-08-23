@@ -19,4 +19,8 @@ export const getFormRequest = (id: number): Action =>
 export const getFormSuccess = (data: Form): Action =>
   action(FormsTypes.GET_FORM_SUCCESS, { data });
 
+// Set Modified Forms
+export const setForms = (data: Form[]): Action =>
+  action(FormsTypes.SET_FORMS, { data });
+
 export const getFormFailure = (): Action => action(FormsTypes.GET_FORM_FAILURE);

@@ -17,11 +17,18 @@ export interface Fill {
   latitude?: number;
   longitude?: number;
   values?: Value[];
+  images?: Img[];
 }
 
 export interface Value {
   fieldId?: number;
   value: string;
+}
+
+export interface Img {
+  uri: string;
+  name: string;
+  type: string;
 }
 
 /**

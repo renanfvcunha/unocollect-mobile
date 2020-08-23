@@ -1,14 +1,14 @@
 import { action } from 'typesafe-actions';
 import { Action } from 'redux';
 
-import { FillsTypes, Fill } from './types';
+import { FillsTypes } from './types';
 
 // Add User Location
 export const addUserLocation = (latitude: number, longitude: number): Action =>
   action(FillsTypes.ADD_USER_LOCATION, { latitude, longitude });
 
 // Add Fill
-export const addFillRequest = (data: Fill): Action =>
+export const addFillRequest = (data: FormData): Action =>
   action(FillsTypes.ADD_FILL_REQUEST, { data });
 
 export const addFillSuccess = (msg: string): Action =>

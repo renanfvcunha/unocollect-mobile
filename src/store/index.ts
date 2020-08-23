@@ -22,6 +22,7 @@ export interface ApplicationState {
 const persistConfig = {
   key: 'unoCollect',
   storage: AsyncStorage,
+  blacklist: ['fills'],
 };
 
 /**

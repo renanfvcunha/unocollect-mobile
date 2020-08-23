@@ -46,6 +46,12 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
         error: true,
       };
 
+    case FormsTypes.SET_FORMS:
+      return {
+        ...state,
+        forms: action.payload.data,
+      };
+
     default:
       return state;
   }
