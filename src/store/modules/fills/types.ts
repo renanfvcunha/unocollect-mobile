@@ -16,7 +16,8 @@ export enum FillsTypes {
 export interface Fill {
   latitude?: number;
   longitude?: number;
-  values?: Value[];
+  formValues?: Value[];
+  date?: Date;
   images?: Img[];
 }
 
@@ -36,4 +37,6 @@ export interface Img {
  */
 export interface FillsState {
   readonly fill: Fill;
+  readonly loading: boolean;
+  readonly error: boolean;
 }

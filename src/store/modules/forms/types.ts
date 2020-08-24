@@ -12,7 +12,6 @@ export enum FormsTypes {
   GET_FORM_REQUEST = '@forms/GET_FORM_REQUEST',
   GET_FORM_SUCCESS = '@forms/GET_FORM_SUCCESS',
   GET_FORM_FAILURE = '@forms/GET_FORM_FAILURE',
-  SET_FORMS = '@forms/SET_FORMS',
 }
 
 /**

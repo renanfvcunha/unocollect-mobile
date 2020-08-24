@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   View,
   Image,
@@ -8,6 +8,7 @@ import {
   Platform,
   Text,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from 'react-native';
 import {
   MaterialIcons as MdIcon,
@@ -15,10 +16,13 @@ import {
 } from '@expo/vector-icons';
 
 import styles from './styles';
+import { ApplicationState } from '../../store';
 import { loginRequest } from '../../store/modules/auth/actions';
 import logo from '../../../assets/logoUnoCollect.png';
 
 const Login: React.FC = () => {
+  const loading = useSelector((state: ApplicationState) => state.auth.loading);
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -69,6 +73,12 @@ const Login: React.FC = () => {
             onSubmitEditing={() => handleSubmit()}
           />
         </View>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#3f51b5" />
+        ) : (
+          <View />
+        )}
 
         <TouchableOpacity
           style={styles.subButton}

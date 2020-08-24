@@ -17,7 +17,7 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         forms: action.payload.data,
-        loading: true,
+        loading: false,
         error: false,
       };
 
@@ -44,12 +44,6 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
         ...state,
         loading: false,
         error: true,
-      };
-
-    case FormsTypes.SET_FORMS:
-      return {
-        ...state,
-        forms: action.payload.data,
       };
 
     default:

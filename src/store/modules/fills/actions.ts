@@ -8,8 +8,8 @@ export const addUserLocation = (latitude: number, longitude: number): Action =>
   action(FillsTypes.ADD_USER_LOCATION, { latitude, longitude });
 
 // Add Fill
-export const addFillRequest = (data: FormData): Action =>
-  action(FillsTypes.ADD_FILL_REQUEST, { data });
+export const addFillRequest = (data: FormData, formId: string): Action =>
+  action(FillsTypes.ADD_FILL_REQUEST, { data, formId });
 
 export const addFillSuccess = (msg: string): Action =>
   action(FillsTypes.ADD_FILL_SUCCESS, { msg });

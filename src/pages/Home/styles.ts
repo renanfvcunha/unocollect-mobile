@@ -71,6 +71,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 16,
   },
+  refreshButton: {
+    width: '75%',
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'center',
+    backgroundColor: '#2196f3',
+    borderRadius: 8,
+    paddingVertical: 16,
+    marginTop: 24,
+    marginBottom: 16,
+  },
+  refreshButtonText: {
+    color: '#fff',
+    textTransform: 'uppercase',
+    fontSize: 16,
+    marginLeft: 16,
+  },
 });
 
 export default styles;

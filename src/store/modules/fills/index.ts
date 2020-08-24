@@ -3,6 +3,8 @@ import { FillsState, FillsTypes } from './types';
 
 const INITIAL_STATE: FillsState = {
   fill: {},
+  loading: false,
+  error: false,
 };
 
 const reducer: Reducer<FillsState> = (state = INITIAL_STATE, action) => {

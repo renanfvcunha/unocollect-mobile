@@ -80,6 +80,17 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontSize: 16,
   },
+  offView: {
+    width: '75%',
+    backgroundColor: '#ba000d',
+    borderRadius: 8,
+    elevation: 8,
+    padding: 4,
+  },
+  offText: {
+    color: '#fff',
+    fontSize: 14,
+  },
 });
 
 export default styles;

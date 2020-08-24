@@ -10,8 +10,10 @@ import {
   TouchableOpacity,
   TextInputChangeEventData,
   NativeSyntheticEvent,
+  ActivityIndicator,
 } from 'react-native';
-import {} from '@react-navigation/native';
+import NetInfo from '@react-native-community/netinfo';
+import AsyncStorage from '@react-native-community/async-storage';
 import { launchCameraAsync, MediaTypeOptions } from 'expo-image-picker';
 import Constants from 'expo-constants';
 import { MaterialIcons as MdIcon } from '@expo/vector-icons';
@@ -20,10 +22,10 @@ import PropTypes from 'prop-types';
 
 import styles from './styles';
 import { Form } from '../../store/modules/forms/types';
-import { Img } from '../../store/modules/fills/types';
-import { addFill, setForms } from '../../store/modules/forms/actions';
+import { Img, Fill as FillType } from '../../store/modules/fills/types';
+
 import { ApplicationState } from '../../store';
-import tron from '../../config/ReactotronConfig';
+import { addFillRequest } from '../../store/modules/fills/actions';
 
 interface IForm {
   route: {
@@ -36,6 +38,11 @@ interface Values {
   value: string;
 }
 
+interface IFill {
+  formId?: number;
+  fill: FillType;
+}
+
 const Fill: React.FC<IForm> = ({ route }) => {
   const form = route.params;
 
@@ -45,10 +52,11 @@ const Fill: React.FC<IForm> = ({ route }) => {
   const longitude = useSelector(
     (state: ApplicationState) => state.fills.fill.longitude,
   );
-  const forms = useSelector((state: ApplicationState) => state.forms.forms);
+  const loading = useSelector((state: ApplicationState) => state.fills.loading);
 
   const [images, setImages] = useState<Img[]>([]);
   const [formValues, setFormValues] = useState<Values[]>([]);
+  const [showOffText, setShowOffText] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -57,7 +65,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
       const result = await launchCameraAsync({
         mediaTypes: MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 1,
+        quality: 0.5,
       });
 
       if (!result.cancelled) {
@@ -128,39 +136,108 @@ const Fill: React.FC<IForm> = ({ route }) => {
     setFormValues(newValue);
   };
 
+  /**
+   * Submissão do formulário
+   */
   const handleSubmit = () => {
-    const values = formValues.map((value) => JSON.stringify(value));
-
-    const data = new FormData();
-    data.append('latitude', String(latitude));
-    data.append('longitude', String(longitude));
-    for (let i = 0; i < values.length; i += 1) {
-      data.append(`values[${i}]`, values[i]);
-    }
-    if (images) {
-      for (let i = 0; i < images.length; i += 1) {
-        data.append('image', {
-          uri: images[i].uri,
-          name: images[i].name,
-          type: images[i].type,
-        });
-      }
-    }
-
-    const formFilled = {
-      id: form.id,
-      title: form.title,
-      description: form.description,
-      fields: form.fields,
-      fill: data,
+    const jsonData = {
+      formId: form.id,
+      fill: {
+        latitude,
+        longitude,
+        formValues,
+        date: new Date(new Date().setHours(new Date().getHours() + 3)),
+        images,
+      },
     };
 
-    const newForms = forms;
-    const index = newForms.findIndex((oldForm: Form) => oldForm.id === form.id);
-    newForms.splice(index, 1);
-    newForms.push(formFilled);
+    const fills: IFill[] = [];
 
-    dispatch(setForms(newForms));
+    const setFill = async () => {
+      try {
+        const fillsData = await AsyncStorage.getItem('fills');
+        if (fillsData === null) {
+          fills.push(jsonData);
+          await AsyncStorage.setItem('fills', JSON.stringify(fills));
+        } else {
+          const fillsParsed: IFill[] = JSON.parse(fillsData);
+          if (fillsParsed.findIndex((fill) => fill.formId === form.id) === -1) {
+            fillsParsed.push(jsonData);
+            await AsyncStorage.setItem('fills', JSON.stringify(fillsParsed));
+          }
+        }
+      } catch (err) {
+        Alert.alert('', err);
+      }
+    };
+
+    setFill();
+
+    /**
+     * Verificando se usuário está com acesso à internet para envio direto do
+     * formulário. Caso contrário o formulário será salvo no async storage
+     * até que o usuário obtenha acesso à internet.
+     */
+    NetInfo.fetch().then((state) => {
+      if (state.isInternetReachable) {
+        const submitForm = async () => {
+          try {
+            const data = await AsyncStorage.getItem('fills');
+            if (data !== null) {
+              const parsedData: IFill[] = JSON.parse(data);
+
+              const formData = parsedData.find(
+                (fill) => fill.formId === form.id,
+              );
+
+              if (formData) {
+                if (
+                  formData.fill.latitude &&
+                  formData.fill.longitude &&
+                  formData.fill.formValues &&
+                  formData.fill.date
+                ) {
+                  /**
+                   * Convertendo json dos valores em string
+                   */
+                  const values = formData.fill.formValues.map((value) =>
+                    JSON.stringify(value),
+                  );
+
+                  /**
+                   * Criando campos utilizando o FormData
+                   */
+                  const submit = new FormData();
+                  submit.append('latitude', String(formData.fill.latitude));
+                  submit.append('longitude', String(formData.fill.longitude));
+                  submit.append('date', String(formData.fill.date));
+                  for (let i = 0; i < formData.fill.formValues.length; i += 1) {
+                    submit.append(`values[${i}]`, values[i]);
+                  }
+                  if (formData.fill.images) {
+                    for (let i = 0; i < formData.fill.images.length; i += 1) {
+                      submit.append('image', {
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore: Unreachable code error
+                        uri: images[i].uri,
+                        name: images[i].name,
+                        type: images[i].type,
+                      });
+                    }
+                  }
+                  dispatch(addFillRequest(submit, String(formData.formId)));
+                }
+              }
+            }
+          } catch (err) {
+            Alert.alert('', err);
+          }
+        };
+        submitForm();
+      } else {
+        setShowOffText(true);
+      }
+    });
   };
 
   const fields = [];
@@ -201,6 +278,30 @@ const Fill: React.FC<IForm> = ({ route }) => {
     getPermission();
   }, []);
 
+  useEffect(() => {
+    const getFills = async () => {
+      try {
+        const data = await AsyncStorage.getItem('fills');
+        if (data !== null) {
+          const parsedData: IFill[] = JSON.parse(data);
+
+          const formData = parsedData.find((fill) => fill.formId === form.id);
+
+          if (formData) {
+            if (formData.fill.images && formData.fill.formValues) {
+              setImages(formData.fill.images);
+              setFormValues(formData.fill.formValues);
+            }
+          }
+        }
+      } catch (err) {
+        Alert.alert('', err);
+      }
+    };
+
+    getFills();
+  }, [form.id]);
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <View style={styles.content}>
@@ -218,6 +319,24 @@ const Fill: React.FC<IForm> = ({ route }) => {
         <View style={styles.imgArr}>{imagesField}</View>
 
         {fields}
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#3f51b5" />
+        ) : (
+          <View />
+        )}
+
+        {showOffText ? (
+          <View style={styles.offView}>
+            <Text style={styles.offText}>
+              Você está offline. Os dados serão salvos no dispositivo até a
+              inicialização da aplicação em uma conexão ativa para que possam
+              ser enviados.
+            </Text>
+          </View>
+        ) : (
+          <View />
+        )}
 
         <TouchableOpacity
           style={styles.subButton}

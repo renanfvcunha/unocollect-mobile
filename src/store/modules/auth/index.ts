@@ -39,7 +39,7 @@ const reducer: Reducer<AuthState> = (state = INITIAL_STATE, action) => {
     case AuthTypes.LOGOUT:
       return {
         ...state,
-        token: '',
+        token: undefined,
         user: {},
         logged: false,
       };
