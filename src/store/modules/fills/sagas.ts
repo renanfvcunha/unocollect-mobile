@@ -5,14 +5,9 @@ import { Alert } from 'react-native';
 import api from '../../../services/api';
 import { FillsTypes } from './types';
 import { addFillSuccess, addFillFailure } from './actions';
-import tron from '../../../config/ReactotronConfig';
 
 export function* addFill({ payload }: AnyAction) {
   try {
-    if (tron.log) {
-      tron.log(payload);
-    }
-
     const response = yield call(
       api.post,
       `fills/${payload.formId}`,

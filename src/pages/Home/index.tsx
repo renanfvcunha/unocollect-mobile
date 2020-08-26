@@ -21,7 +21,6 @@ import { ApplicationState } from '../../store';
 import { logout } from '../../store/modules/auth/actions';
 import { getFormsRequest } from '../../store/modules/forms/actions';
 import logoImg from '../../../assets/logoUnoCollect.png';
-import tron from '../../config/ReactotronConfig';
 
 const Home: React.FC = () => {
   const nav = useNavigation();
@@ -30,6 +29,17 @@ const Home: React.FC = () => {
   const loading = useSelector((state: ApplicationState) => state.forms.loading);
 
   const dispatch = useDispatch();
+
+  const removeFills = async () => {
+    try {
+      const data = await AsyncStorage.getItem('fills');
+      if (data !== null) {
+        await AsyncStorage.removeItem('fills');
+      }
+    } catch (err) {
+      Alert.alert('', err);
+    }
+  };
 
   const handleLogout = () => {
     Alert.alert('', 'Deseja sair da aplicação?', [
@@ -40,7 +50,10 @@ const Home: React.FC = () => {
       {
         text: 'Sair',
         style: 'destructive',
-        onPress: () => dispatch(logout()),
+        onPress: async () => {
+          await removeFills();
+          dispatch(logout());
+        },
       },
     ]);
   };
@@ -48,25 +61,6 @@ const Home: React.FC = () => {
   useEffect(() => {
     dispatch(getFormsRequest());
   }, [dispatch]);
-
-  useEffect(() => {
-    // const fills: Fill[] = [];
-
-    const getFills = async () => {
-      try {
-        const data = await AsyncStorage.getItem('fills');
-        if (data !== null) {
-          if (tron.log) {
-            tron.log(JSON.parse(data));
-          }
-        }
-      } catch (err) {
-        Alert.alert('', err);
-      }
-    };
-
-    getFills();
-  }, []);
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>

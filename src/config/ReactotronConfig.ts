@@ -9,8 +9,11 @@ if (Reactotron.setAsyncStorageHandler) {
     .configure({ host: process.env.REACTOTRON_URL })
     .use(reactotronRedux())
     .use(sagaPlugin({ except: [''] }))
-    .useReactNative()
-    .connect();
+    .useReactNative();
+
+  if (__DEV__) {
+    tron.connect();
+  }
 
   if (tron.clear) {
     tron.clear();
@@ -19,8 +22,11 @@ if (Reactotron.setAsyncStorageHandler) {
   tron = Reactotron.configure({ host: process.env.REACTOTRON_URL })
     .use(reactotronRedux())
     .use(sagaPlugin({ except: [''] }))
-    .useReactNative()
-    .connect();
+    .useReactNative();
+
+  if (__DEV__) {
+    tron.connect();
+  }
 
   if (tron.clear) {
     tron.clear();
