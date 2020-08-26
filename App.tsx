@@ -6,18 +6,12 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './src/store';
 import Auth from './src/Auth';
 
-/* if (__DEV__) {
-  import('./src/config/ReactotronConfig').then(() =>
-    console.log('Reactotron Started!'),
-  );
-} */
-
 const App: React.FC = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <Auth />
-        <StatusBar style="auto" backgroundColor="#fff" />
+        <StatusBar style="light" backgroundColor="#302d2d" />
       </PersistGate>
     </Provider>
   );
