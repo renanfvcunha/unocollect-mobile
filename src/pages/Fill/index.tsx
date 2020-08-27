@@ -146,7 +146,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
         latitude,
         longitude,
         formValues,
-        date: new Date(new Date().setHours(new Date().getHours() + 3)),
+        date: new Date(),
         images,
       },
     };
