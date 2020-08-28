@@ -65,7 +65,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
       const result = await launchCameraAsync({
         mediaTypes: MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 0.5,
+        quality: 1,
       });
 
       if (!result.cancelled) {
