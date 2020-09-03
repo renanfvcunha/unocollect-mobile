@@ -1,14 +1,20 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { SagaIterator } from 'redux-saga';
 import { AnyAction } from 'redux';
 import { Alert } from 'react-native';
+import { AxiosResponse } from 'axios';
 
 import api from '../../../services/api';
 import { FillsTypes } from './types';
 import { addFillSuccess, addFillFailure } from './actions';
 
-export function* addFill({ payload }: AnyAction) {
+interface Msg {
+  msg: string;
+}
+
+export function* addFill({ payload }: AnyAction): SagaIterator {
   try {
-    const response = yield call(
+    const response: AxiosResponse<Msg> = yield call(
       api.post,
       `fills/${payload.formId}`,
       payload.data,

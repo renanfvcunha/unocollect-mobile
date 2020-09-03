@@ -1,3 +1,5 @@
+import { Fill } from '../fills/types';
+
 /**
  * Action Types
  */
@@ -23,13 +25,13 @@ export interface Form {
   title?: string;
   description?: string;
   fields?: Field[];
-  fill?: FormData;
+  fill?: Fill | null;
 }
 
 export interface Field {
   id?: number;
   name?: string;
-  description?: string;
+  description?: string | null;
 }
 
 /**

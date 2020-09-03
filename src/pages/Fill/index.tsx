@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   View,
@@ -12,6 +12,7 @@ import {
   NativeSyntheticEvent,
   ActivityIndicator,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-community/async-storage';
 import { launchCameraAsync, MediaTypeOptions } from 'expo-image-picker';
@@ -21,11 +22,13 @@ import { askAsync, CAMERA_ROLL } from 'expo-permissions';
 import PropTypes from 'prop-types';
 
 import styles from './styles';
-import { Form } from '../../store/modules/forms/types';
+import { Form, Field } from '../../store/modules/forms/types';
 import { Img, Fill as FillType } from '../../store/modules/fills/types';
-
 import { ApplicationState } from '../../store';
-import { addFillRequest } from '../../store/modules/fills/actions';
+import {
+  addFillRequest,
+  setSuccessFalse,
+} from '../../store/modules/fills/actions';
 
 interface IForm {
   route: {
@@ -39,12 +42,16 @@ interface Values {
 }
 
 interface IFill {
-  formId?: number;
+  id?: number;
+  title?: string;
+  description?: string;
+  fields?: Field[];
   fill: FillType;
 }
 
 const Fill: React.FC<IForm> = ({ route }) => {
   const form = route.params;
+  const nav = useNavigation();
 
   const latitude = useSelector(
     (state: ApplicationState) => state.fills.fill.latitude,
@@ -53,55 +60,97 @@ const Fill: React.FC<IForm> = ({ route }) => {
     (state: ApplicationState) => state.fills.fill.longitude,
   );
   const loading = useSelector((state: ApplicationState) => state.fills.loading);
+  const success = useSelector((state: ApplicationState) => state.fills.success);
 
   const [images, setImages] = useState<Img[]>([]);
   const [formValues, setFormValues] = useState<Values[]>([]);
-  const [showOffText, setShowOffText] = useState(false);
+
+  const removeFill = useCallback(async () => {
+    if (success && form.fill?.key) {
+      const data = await AsyncStorage.getItem('fills');
+
+      if (data !== null) {
+        const parsedData: IFill[] = JSON.parse(data);
+
+        const fills = parsedData.filter(
+          (fillToRemove) => fillToRemove.fill.key !== form.fill?.key,
+        );
+
+        await AsyncStorage.setItem('fills', JSON.stringify(fills));
+      }
+    }
+  }, [success, form.fill?.key]);
 
   const dispatch = useDispatch();
 
   const pickImage = async () => {
-    try {
-      const result = await launchCameraAsync({
-        mediaTypes: MediaTypeOptions.Images,
-        allowsEditing: true,
-        quality: 1,
-      });
+    if (!form.fill?.key) {
+      try {
+        const result = await launchCameraAsync({
+          mediaTypes: MediaTypeOptions.Images,
+          allowsEditing: true,
+          quality: 1,
+        });
 
-      if (!result.cancelled) {
-        const { uri } = result;
-        const name = uri.split('/').pop();
-        const type = `image/${uri.split('.').pop()}`;
+        if (!result.cancelled) {
+          const { uri } = result;
+          const name = uri.split('/').pop();
+          const type = `image/${uri.split('.').pop()}`;
 
-        const newImage = [...images];
-        if (uri && name && type) {
-          const image = { uri, name, type };
-          newImage.push(image);
-          setImages(newImage);
+          const newImage = [...images];
+          if (uri && name && type) {
+            const image = { uri, name, type };
+            newImage.push(image);
+            setImages(newImage);
+          }
         }
+      } catch (err) {
+        Alert.alert('Erro', err);
       }
-    } catch (err) {
-      Alert.alert('Erro', err);
+    } else {
+      Alert.alert(
+        'Erro',
+        'Não é possível adicionar imagens em formulários já preenchidos.',
+        [
+          {
+            text: 'Ok',
+            style: 'default',
+          },
+        ],
+      );
     }
   };
 
   const removeImage = (i: number) => {
-    Alert.alert('', 'Deseja remover esta imagem?', [
-      {
-        text: 'Cancelar',
-        style: 'cancel',
-      },
-      {
-        text: 'Ok',
-        style: 'destructive',
-        onPress: () => {
-          const removedImage = [...images];
-          removedImage.splice(i, 1);
-
-          setImages(removedImage);
+    if (!form.fill?.key) {
+      Alert.alert('', 'Deseja remover esta imagem?', [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
         },
-      },
-    ]);
+        {
+          text: 'Ok',
+          style: 'destructive',
+          onPress: () => {
+            const removedImage = [...images];
+            removedImage.splice(i, 1);
+
+            setImages(removedImage);
+          },
+        },
+      ]);
+    } else {
+      Alert.alert(
+        'Erro',
+        'Não é possível remover imagens em formulários já preenchidos.',
+        [
+          {
+            text: 'Ok',
+            style: 'default',
+          },
+        ],
+      );
+    }
   };
 
   const imagesField = [];
@@ -124,16 +173,25 @@ const Fill: React.FC<IForm> = ({ route }) => {
     i: number,
     e: NativeSyntheticEvent<TextInputChangeEventData>,
   ) => {
-    const newValue = [...formValues];
+    if (!form.fill?.key) {
+      const newValue = [...formValues];
 
-    const value = {
-      ...newValue[i],
-      value: e.nativeEvent.text,
-    };
+      const value = {
+        ...newValue[i],
+        value: e.nativeEvent.text,
+      };
 
-    newValue[i] = value;
+      newValue[i] = value;
 
-    setFormValues(newValue);
+      setFormValues(newValue);
+    }
+  };
+
+  const generateFillKey = () => {
+    const min = Math.ceil(1000);
+    const max = Math.ceil(9999);
+
+    return Math.floor(Math.random() * (max - min)) + min;
   };
 
   /**
@@ -141,8 +199,9 @@ const Fill: React.FC<IForm> = ({ route }) => {
    */
   const handleSubmit = () => {
     const jsonData = {
-      formId: form.id,
+      ...form,
       fill: {
+        key: form.fill?.key || generateFillKey(),
         latitude,
         longitude,
         formValues,
@@ -151,28 +210,6 @@ const Fill: React.FC<IForm> = ({ route }) => {
       },
     };
 
-    const fills: IFill[] = [];
-
-    const setFill = async () => {
-      try {
-        const fillsData = await AsyncStorage.getItem('fills');
-        if (fillsData === null) {
-          fills.push(jsonData);
-          await AsyncStorage.setItem('fills', JSON.stringify(fills));
-        } else {
-          const fillsParsed: IFill[] = JSON.parse(fillsData);
-          if (fillsParsed.findIndex((fill) => fill.formId === form.id) === -1) {
-            fillsParsed.push(jsonData);
-            await AsyncStorage.setItem('fills', JSON.stringify(fillsParsed));
-          }
-        }
-      } catch (err) {
-        Alert.alert('', err);
-      }
-    };
-
-    setFill();
-
     /**
      * Verificando se usuário está com acesso à internet para envio direto do
      * formulário. Caso contrário o formulário será salvo no async storage
@@ -180,62 +217,100 @@ const Fill: React.FC<IForm> = ({ route }) => {
      */
     NetInfo.fetch().then((state) => {
       if (state.isInternetReachable) {
-        const submitForm = async () => {
+        if (!form.fill?.key) {
+          /**
+           * Convertendo json dos valores em string
+           */
+          const values = jsonData.fill.formValues.map((value) =>
+            JSON.stringify(value),
+          );
+          /**
+           * Criando campos utilizando o FormData
+           */
+          const submit = new FormData();
+          submit.append('latitude', String(jsonData.fill.latitude));
+          submit.append('longitude', String(jsonData.fill.longitude));
+          submit.append('date', String(jsonData.fill.date));
+          for (let i = 0; i < jsonData.fill.formValues.length; i += 1) {
+            submit.append(`values[${i}]`, values[i]);
+          }
+          if (jsonData.fill.images) {
+            for (let i = 0; i < jsonData.fill.images.length; i += 1) {
+              submit.append('image', {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore: Unreachable code error
+                uri: images[i].uri,
+                name: images[i].name,
+                type: images[i].type,
+              });
+            }
+          }
+          dispatch(addFillRequest(submit, String(form.id)));
+        } else {
+          /**
+           * Convertendo json dos valores em string
+           */
+
+          let values: string[] = [];
+          if (form.fill.formValues) {
+            values = form.fill.formValues.map((value) => JSON.stringify(value));
+          }
+
+          /**
+           * Criando campos utilizando o FormData
+           */
+          const submit = new FormData();
+          submit.append('latitude', String(form.fill.latitude));
+          submit.append('longitude', String(form.fill.longitude));
+          submit.append('date', String(form.fill.date));
+          if (form.fill.formValues) {
+            for (let i = 0; i < form.fill.formValues.length; i += 1) {
+              submit.append(`values[${i}]`, values[i]);
+            }
+          }
+          if (form.fill.images) {
+            for (let i = 0; i < form.fill.images.length; i += 1) {
+              submit.append('image', {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore: Unreachable code error
+                uri: images[i].uri,
+                name: images[i].name,
+                type: images[i].type,
+              });
+            }
+          }
+          dispatch(addFillRequest(submit, String(form.id)));
+        }
+      } else {
+        const fill: IFill[] = [];
+
+        const setFill = async () => {
           try {
-            const data = await AsyncStorage.getItem('fills');
-            if (data !== null) {
-              const parsedData: IFill[] = JSON.parse(data);
-
-              const formData = parsedData.find(
-                (fill) => fill.formId === form.id,
-              );
-
-              if (formData) {
-                if (
-                  formData.fill.latitude &&
-                  formData.fill.longitude &&
-                  formData.fill.formValues &&
-                  formData.fill.date
-                ) {
-                  /**
-                   * Convertendo json dos valores em string
-                   */
-                  const values = formData.fill.formValues.map((value) =>
-                    JSON.stringify(value),
-                  );
-
-                  /**
-                   * Criando campos utilizando o FormData
-                   */
-                  const submit = new FormData();
-                  submit.append('latitude', String(formData.fill.latitude));
-                  submit.append('longitude', String(formData.fill.longitude));
-                  submit.append('date', String(formData.fill.date));
-                  for (let i = 0; i < formData.fill.formValues.length; i += 1) {
-                    submit.append(`values[${i}]`, values[i]);
-                  }
-                  if (formData.fill.images) {
-                    for (let i = 0; i < formData.fill.images.length; i += 1) {
-                      submit.append('image', {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore: Unreachable code error
-                        uri: images[i].uri,
-                        name: images[i].name,
-                        type: images[i].type,
-                      });
-                    }
-                  }
-                  dispatch(addFillRequest(submit, String(formData.formId)));
-                }
-              }
+            const fillsData = await AsyncStorage.getItem('fills');
+            if (fillsData === null) {
+              fill.push(jsonData);
+              await AsyncStorage.setItem('fills', JSON.stringify(fill));
+            } else {
+              const fillsParsed: IFill[] = JSON.parse(fillsData);
+              fillsParsed.push(jsonData);
+              await AsyncStorage.setItem('fills', JSON.stringify(fillsParsed));
             }
           } catch (err) {
             Alert.alert('', err);
           }
         };
-        submitForm();
-      } else {
-        setShowOffText(true);
+
+        setFill();
+
+        Alert.alert(
+          'Aviso',
+          'Você está offline. Os dados serão salvos no dispositivo até a inicialização da aplicação em uma conexão ativa para que possam ser enviados.',
+        );
+
+        nav.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
       }
     });
   };
@@ -279,28 +354,22 @@ const Fill: React.FC<IForm> = ({ route }) => {
   }, []);
 
   useEffect(() => {
-    const getFills = async () => {
-      try {
-        const data = await AsyncStorage.getItem('fills');
-        if (data !== null) {
-          const parsedData: IFill[] = JSON.parse(data);
+    if (form.fill) {
+      setImages(form.fill.images || []);
+      setFormValues(form.fill.formValues || []);
+    }
+  }, [form.fill]);
 
-          const formData = parsedData.find((fill) => fill.formId === form.id);
-
-          if (formData) {
-            if (formData.fill.images && formData.fill.formValues) {
-              setImages(formData.fill.images);
-              setFormValues(formData.fill.formValues);
-            }
-          }
-        }
-      } catch (err) {
-        Alert.alert('', err);
-      }
-    };
-
-    getFills();
-  }, [form.id]);
+  useEffect(() => {
+    removeFill();
+    if (success) {
+      dispatch(setSuccessFalse());
+      nav.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    }
+  }, [removeFill, success, dispatch, nav]);
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
@@ -326,18 +395,6 @@ const Fill: React.FC<IForm> = ({ route }) => {
           <View />
         )}
 
-        {showOffText ? (
-          <View style={styles.offView}>
-            <Text style={styles.offText}>
-              Você está offline. Os dados serão salvos no dispositivo até a
-              inicialização da aplicação em uma conexão ativa para que possam
-              ser enviados.
-            </Text>
-          </View>
-        ) : (
-          <View />
-        )}
-
         <TouchableOpacity
           style={styles.subButton}
           activeOpacity={0.5}
@@ -356,7 +413,32 @@ Fill.propTypes = {
       id: PropTypes.number.isRequired,
       title: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
-      fields: PropTypes.array.isRequired, // eslint-disable-line
+      fields: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number.isRequired,
+          name: PropTypes.string.isRequired,
+          description: PropTypes.string,
+        }).isRequired,
+      ).isRequired,
+      fill: PropTypes.shape({
+        key: PropTypes.number.isRequired,
+        latitude: PropTypes.number.isRequired,
+        longitude: PropTypes.number.isRequired,
+        formValues: PropTypes.arrayOf(
+          PropTypes.shape({
+            fieldId: PropTypes.number.isRequired,
+            value: PropTypes.string,
+          }).isRequired,
+        ).isRequired,
+        date: PropTypes.string.isRequired,
+        images: PropTypes.arrayOf(
+          PropTypes.shape({
+            uri: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+            type: PropTypes.string.isRequired,
+          }).isRequired,
+        ).isRequired,
+      }),
     }).isRequired,
   }).isRequired,
 };

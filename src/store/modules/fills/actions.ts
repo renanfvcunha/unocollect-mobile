@@ -15,3 +15,6 @@ export const addFillSuccess = (msg: string): Action =>
   action(FillsTypes.ADD_FILL_SUCCESS, { msg });
 
 export const addFillFailure = (): Action => action(FillsTypes.ADD_FILL_FAILURE);
+
+export const setSuccessFalse = (): Action =>
+  action(FillsTypes.SET_SUCCESS_FALSE);

@@ -4,6 +4,7 @@ import { FillsState, FillsTypes } from './types';
 const INITIAL_STATE: FillsState = {
   fill: {},
   loading: false,
+  success: false,
   error: false,
 };
 
@@ -22,6 +23,7 @@ const reducer: Reducer<FillsState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         loading: true,
+        success: false,
         error: false,
       };
 
@@ -29,6 +31,7 @@ const reducer: Reducer<FillsState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         loading: false,
+        success: true,
         error: false,
       };
 
@@ -36,7 +39,16 @@ const reducer: Reducer<FillsState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         loading: false,
+        success: false,
         error: true,
+      };
+
+    case FillsTypes.SET_SUCCESS_FALSE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: false,
       };
 
     default:
