@@ -215,7 +215,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
      * formulário. Caso contrário o formulário será salvo no async storage
      * até que o usuário obtenha acesso à internet.
      */
-    NetInfo.fetch().then((state) => {
+    NetInfo.fetch().then(async (state) => {
       if (state.isInternetReachable) {
         if (!form.fill?.key) {
           /**
@@ -300,7 +300,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
           }
         };
 
-        setFill();
+        await setFill();
 
         Alert.alert(
           'Aviso',
@@ -361,14 +361,18 @@ const Fill: React.FC<IForm> = ({ route }) => {
   }, [form.fill]);
 
   useEffect(() => {
-    removeFill();
-    if (success) {
-      dispatch(setSuccessFalse());
-      nav.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      });
-    }
+    const rmFill = async () => {
+      await removeFill();
+      if (success) {
+        dispatch(setSuccessFalse());
+        nav.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+      }
+    };
+
+    rmFill();
   }, [removeFill, success, dispatch, nav]);
 
   return (
