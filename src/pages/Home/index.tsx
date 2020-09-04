@@ -15,6 +15,7 @@ import {
   MaterialIcons as MdIcon,
 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-community/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import styles from './styles';
 import { ApplicationState } from '../../store';
@@ -22,7 +23,8 @@ import { Field } from '../../store/modules/forms/types';
 import { Fill } from '../../store/modules/fills/types';
 import { logout } from '../../store/modules/auth/actions';
 import { getFormsRequest } from '../../store/modules/forms/actions';
-import logoImg from '../../../assets/logoUnoCollect.png';
+import squaresTop from '../../../assets/squaresTop.png';
+import squaresBottom from '../../../assets/squaresBottom.png';
 
 interface IFill {
   id?: number;
@@ -93,13 +95,19 @@ const Home: React.FC = () => {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+      <LinearGradient
+        colors={['#403f3f', '#302d2d']}
+        start={[0, 0]}
+        end={[1.0, 0]}
+        style={styles.linearGradient}
+      >
+        <Image source={squaresTop} style={styles.squaresTop} />
+        <Image source={squaresBottom} style={styles.squaresBottom} />
+      </LinearGradient>
       <View style={styles.content}>
-        <View style={styles.welcome}>
-          <Text style={styles.welcomeTitle}>Olá, {name?.split(' ')[0]}!</Text>
-          <Image source={logoImg} style={styles.welcomeImg} />
-        </View>
+        <Text style={styles.welcome}>Olá, {name?.split(' ')[0]}</Text>
         <Text style={styles.title}>
-          Formulários disponíveis para preenchimento
+          Formulários disponíveis para preenchimento:
         </Text>
 
         {forms.length !== 0 ? (
@@ -117,9 +125,7 @@ const Home: React.FC = () => {
             </TouchableOpacity>
           ))
         ) : (
-          <View>
-            <Text>Nenhum formulário.</Text>
-          </View>
+          <Text style={styles.noFormText}>Nenhum formulário.</Text>
         )}
 
         {loading ? (
@@ -137,7 +143,7 @@ const Home: React.FC = () => {
           <Text style={styles.refreshButtonText}>Atualizar</Text>
         </TouchableOpacity>
 
-        <Text style={styles.title}>Preenchimentos a enviar</Text>
+        <Text style={styles.title}>Preenchimentos a enviar:</Text>
 
         {formsToSend.length !== 0 ? (
           formsToSend.map((form) => (
@@ -151,9 +157,9 @@ const Home: React.FC = () => {
             </TouchableOpacity>
           ))
         ) : (
-          <View>
-            <Text>Não há preenchimentos pendentes.</Text>
-          </View>
+          <Text style={styles.noFormText}>
+            Não há preenchimentos pendentes.
+          </Text>
         )}
 
         <TouchableOpacity
