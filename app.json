@@ -2,13 +2,13 @@
   "expo": {
     "name": "Uno Collect",
     "slug": "uno-collect",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/logoUnoCollect.png",
     "splash": {
       "image": "./assets/splashUnoCollect.png",
       "resizeMode": "contain",
-      "backgroundColor": "#e7e7e7"
+      "backgroundColor": "#363333"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -24,7 +24,7 @@
     },
     "android": {
       "package": "com.unocomunicacao.unocollect",
-      "versionCode": 2
+      "versionCode": 3
     }
   }
 }

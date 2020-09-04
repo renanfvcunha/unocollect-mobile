@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Routes from './routes';
 import { ApplicationState } from './store';
 import { addUserLocation } from './store/modules/fills/actions';
+import Background from './components/Background';
 
 const Auth: React.FC = () => {
   const logged = useSelector((state: ApplicationState) => state.auth.logged);

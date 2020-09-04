@@ -11,7 +11,7 @@ const App: React.FC = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <Auth />
-        <StatusBar style="light" backgroundColor="#302d2d" />
+        <StatusBar style="light" />
       </PersistGate>
     </Provider>
   );
