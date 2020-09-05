@@ -11,13 +11,7 @@ const Routes: React.FC = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#e7e7e7',
-          },
-        }}
-      >
+      <Stack.Navigator>
         <Stack.Screen
           name="Home"
           component={Home}
@@ -30,6 +24,8 @@ const Routes: React.FC = () => {
           component={Fill}
           options={{
             headerTitle: 'Novo Preenchimento',
+            headerTransparent: true,
+            headerTintColor: '#fff',
           }}
         />
       </Stack.Navigator>

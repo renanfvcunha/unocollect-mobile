@@ -19,6 +19,7 @@ import { launchCameraAsync, MediaTypeOptions } from 'expo-image-picker';
 import Constants from 'expo-constants';
 import { MaterialIcons as MdIcon } from '@expo/vector-icons';
 import { askAsync, CAMERA_ROLL } from 'expo-permissions';
+import { LinearGradient } from 'expo-linear-gradient';
 import PropTypes from 'prop-types';
 
 import styles from './styles';
@@ -29,6 +30,8 @@ import {
   addFillRequest,
   setSuccessFalse,
 } from '../../store/modules/fills/actions';
+import squaresTop from '../../../assets/squaresTop.png';
+import squaresBottom from '../../../assets/squaresBottom.png';
 
 interface IForm {
   route: {
@@ -111,12 +114,6 @@ const Fill: React.FC<IForm> = ({ route }) => {
       Alert.alert(
         'Erro',
         'Não é possível adicionar imagens em formulários já preenchidos.',
-        [
-          {
-            text: 'Ok',
-            style: 'default',
-          },
-        ],
       );
     }
   };
@@ -201,7 +198,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
     const jsonData = {
       ...form,
       fill: {
-        key: form.fill?.key || generateFillKey(),
+        key: generateFillKey(),
         latitude,
         longitude,
         formValues,
@@ -282,6 +279,14 @@ const Fill: React.FC<IForm> = ({ route }) => {
           dispatch(addFillRequest(submit, String(form.id)));
         }
       } else {
+        if (form.fill?.key) {
+          Alert.alert(
+            'Erro',
+            'Este formulário já foi preenchido. Certifique-se de estar em uma conexão ativa para enviá-lo.',
+          );
+          return;
+        }
+
         const fill: IFill[] = [];
 
         const setFill = async () => {
@@ -328,6 +333,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
           <TextInput
             style={styles.input}
             placeholder={form.fields[i].name}
+            placeholderTextColor="#ffb855"
             value={formValues[i].value}
             onChange={(e) => handleChangeValue(i, e)}
           />
@@ -376,38 +382,60 @@ const Fill: React.FC<IForm> = ({ route }) => {
   }, [removeFill, success, dispatch, nav]);
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.formName}>{form.title}</Text>
-        <Text style={styles.formDesc}>{form.description}</Text>
+    <>
+      <LinearGradient
+        colors={['#403f3f', '#302d2d']}
+        start={[0, 0]}
+        end={[1.0, 0]}
+        style={styles.linearGradient}
+      >
+        <Image source={squaresTop} style={styles.squaresTop} />
+        <Image source={squaresBottom} style={styles.squaresBottom} />
+      </LinearGradient>
 
-        <TouchableOpacity
-          style={styles.addImgBtn}
-          activeOpacity={0.5}
-          onPress={pickImage}
-        >
-          <MdIcon name="add-a-photo" color="#fff" size={24} />
-          <Text style={styles.addImgText}>Adicionar Imagem</Text>
-        </TouchableOpacity>
-        <View style={styles.imgArr}>{imagesField}</View>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.formName}>{form.title}</Text>
+          {form.description ? (
+            <Text style={styles.formDesc}>{form.description}</Text>
+          ) : (
+            <Text />
+          )}
 
-        {fields}
+          <TouchableOpacity
+            style={styles.addImgBtn}
+            activeOpacity={0.5}
+            onPress={pickImage}
+          >
+            <MdIcon name="add-a-photo" color="#000" size={24} />
+            <Text style={styles.addImgText}>Adicionar Imagem</Text>
+          </TouchableOpacity>
+          <View style={styles.imgArr}>{imagesField}</View>
 
-        {loading ? (
-          <ActivityIndicator size="large" color="#3f51b5" />
-        ) : (
-          <View />
-        )}
+          <View style={styles.fieldsBox}>
+            {fields}
 
-        <TouchableOpacity
-          style={styles.subButton}
-          activeOpacity={0.5}
-          onPress={handleSubmit}
-        >
-          <Text style={styles.subButtonText}>Enviar</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+            {loading ? (
+              <ActivityIndicator
+                size="large"
+                color="#ffb855"
+                style={{ marginBottom: 16 }}
+              />
+            ) : (
+              <View />
+            )}
+
+            <TouchableOpacity
+              style={styles.subButton}
+              activeOpacity={0.5}
+              onPress={handleSubmit}
+            >
+              <Text style={styles.subButtonText}>Enviar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </>
   );
 };
 

@@ -24,6 +24,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
   },
+  content: {
+    marginBottom: '20%',
+    alignItems: 'center',
+  },
   logoImg: {
     width: 250,
     height: 250,

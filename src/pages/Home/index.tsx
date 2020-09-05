@@ -94,7 +94,7 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+    <>
       <LinearGradient
         colors={['#403f3f', '#302d2d']}
         start={[0, 0]}
@@ -104,83 +104,86 @@ const Home: React.FC = () => {
         <Image source={squaresTop} style={styles.squaresTop} />
         <Image source={squaresBottom} style={styles.squaresBottom} />
       </LinearGradient>
-      <View style={styles.content}>
-        <Text style={styles.welcome}>Olá, {name?.split(' ')[0]}</Text>
-        <Text style={styles.title}>
-          Formulários disponíveis para preenchimento:
-        </Text>
 
-        {forms.length !== 0 ? (
-          forms.map((form) => (
-            <TouchableOpacity
-              key={form.id}
-              style={styles.formBox}
-              onPress={() => nav.navigate('Fill', form)}
-              activeOpacity={0.5}
-            >
-              <Text style={styles.formTitle}>{form.title}</Text>
-              <Text style={styles.formDescription}>
-                {form.description ? form.description : 'Sem descrição'}
-              </Text>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text style={styles.noFormText}>Nenhum formulário.</Text>
-        )}
-
-        {loading ? (
-          <ActivityIndicator size="large" color="#3f51b5" />
-        ) : (
-          <View />
-        )}
-
-        <TouchableOpacity
-          style={styles.refreshButton}
-          activeOpacity={0.5}
-          onPress={() => dispatch(getFormsRequest())}
-        >
-          <MdIcon name="refresh" size={24} color="#fff" />
-          <Text style={styles.refreshButtonText}>Atualizar</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.title}>Preenchimentos a enviar:</Text>
-
-        {formsToSend.length !== 0 ? (
-          formsToSend.map((form) => (
-            <TouchableOpacity
-              key={form.fill.key}
-              style={styles.formBox}
-              onPress={() => nav.navigate('Fill', form)}
-              activeOpacity={0.5}
-            >
-              <Text style={styles.formTitle}>{form.title}</Text>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text style={styles.noFormText}>
-            Não há preenchimentos pendentes.
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.welcome}>Olá, {name?.split(' ')[0]}</Text>
+          <Text style={styles.title}>
+            Formulários disponíveis para preenchimento:
           </Text>
-        )}
 
-        <TouchableOpacity
-          style={styles.refreshButton}
-          activeOpacity={0.5}
-          onPress={pendentForms}
-        >
-          <MdIcon name="refresh" size={24} color="#fff" />
-          <Text style={styles.refreshButtonText}>Atualizar</Text>
-        </TouchableOpacity>
+          {forms.length !== 0 ? (
+            forms.map((form) => (
+              <TouchableOpacity
+                key={form.id}
+                style={styles.formBox}
+                onPress={() => nav.navigate('Fill', form)}
+                activeOpacity={0.5}
+              >
+                <Text style={styles.formTitle}>{form.title}</Text>
+                <Text style={styles.formDescription}>
+                  {form.description ? form.description : 'Sem descrição'}
+                </Text>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.noFormText}>Nenhum formulário.</Text>
+          )}
 
-        <TouchableOpacity
-          style={styles.logoutButton}
-          activeOpacity={0.5}
-          onPress={handleLogout}
-        >
-          <McIcon name="logout" size={24} color="#fff" />
-          <Text style={styles.logoutButtonText}>Sair</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          {loading ? (
+            <ActivityIndicator size="large" color="#ffb855" />
+          ) : (
+            <View />
+          )}
+
+          <TouchableOpacity
+            style={styles.refreshButton}
+            activeOpacity={0.5}
+            onPress={() => dispatch(getFormsRequest())}
+          >
+            <MdIcon name="refresh" size={24} color="#fff" />
+            <Text style={styles.refreshButtonText}>Atualizar</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.title}>Preenchimentos a enviar:</Text>
+
+          {formsToSend.length !== 0 ? (
+            formsToSend.map((form) => (
+              <TouchableOpacity
+                key={form.fill.key}
+                style={styles.formBox}
+                onPress={() => nav.navigate('Fill', form)}
+                activeOpacity={0.5}
+              >
+                <Text style={styles.formTitle}>{form.title}</Text>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.noFormText}>
+              Não há preenchimentos pendentes.
+            </Text>
+          )}
+
+          <TouchableOpacity
+            style={styles.refreshButton}
+            activeOpacity={0.5}
+            onPress={pendentForms}
+          >
+            <MdIcon name="refresh" size={24} color="#fff" />
+            <Text style={styles.refreshButtonText}>Atualizar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.logoutButton}
+            activeOpacity={0.5}
+            onPress={handleLogout}
+          >
+            <McIcon name="logout" size={24} color="#fff" />
+            <Text style={styles.logoutButtonText}>Sair</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </>
   );
 };
 

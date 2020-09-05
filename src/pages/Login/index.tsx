@@ -52,7 +52,7 @@ const Login: React.FC = () => {
           <Image source={squaresBottom} style={styles.squaresBottom} />
         </LinearGradient>
 
-        <View style={{ marginBottom: '20%', alignItems: 'center' }}>
+        <View style={styles.content}>
           <Image source={logo} style={styles.logoImg} />
 
           <View style={styles.loginBox}>
@@ -87,7 +87,7 @@ const Login: React.FC = () => {
             </View>
 
             {loading ? (
-              <ActivityIndicator size="large" color="#c88824" />
+              <ActivityIndicator size="large" color="#ffb855" />
             ) : (
               <View />
             )}
