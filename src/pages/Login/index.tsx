@@ -56,12 +56,13 @@ const Login: React.FC = () => {
           <Image source={logo} style={styles.logoImg} />
 
           <View style={styles.loginBox}>
-            <View style={styles.textInput}>
+            <View style={styles.inputName}>
               <MdIcon name="person" color="rgba(56, 53, 53, 0.5)" size={24} />
+              <Text style={styles.inputNameLogin}>USUÁRIO</Text>
+            </View>
+            <View style={styles.textInput}>
               <TextInput
-                placeholder="USUÁRIO"
                 style={styles.input}
-                placeholderTextColor="rgba(56, 53, 53, 0.5)"
                 returnKeyType="next"
                 onSubmitEditing={() => passwordRef.current?.focus()}
                 autoCapitalize="none"
@@ -71,13 +72,14 @@ const Login: React.FC = () => {
               />
             </View>
 
-            <View style={styles.textInput}>
+            <View style={styles.inputName}>
               <MdIcon name="lock" color="#ffb855" size={24} />
+              <Text style={styles.inputNamePass}>SENHA</Text>
+            </View>
+            <View style={styles.textInput}>
               <TextInput
-                placeholder="SENHA"
                 ref={passwordRef}
                 style={styles.input}
-                placeholderTextColor="#ffb855"
                 secureTextEntry
                 returnKeyType="send"
                 value={password}

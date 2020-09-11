@@ -41,5 +41,6 @@ module.exports = {
       },
     ],
     'import/no-mutable-exports': 'off',
+    'react/jsx-curly-newline': 'off',
   },
 };

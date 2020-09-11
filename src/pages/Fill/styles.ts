@@ -87,13 +87,24 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 24,
   },
+  inputNameAndDesc: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'baseline',
+  },
+  inputName: {
+    fontSize: 16,
+    color: '#ffb855',
+  },
+  inputDesc: {
+    color: 'rgba(56, 53, 53, 0.5)',
+    marginLeft: 8,
+  },
   input: {
     borderColor: 'rgba(56, 53, 53, 0.5)',
     borderBottomWidth: 1,
     fontSize: 16,
-  },
-  inputDesc: {
-    color: 'rgba(56, 53, 53, 0.5)',
   },
   subButton: {
     width: '50%',

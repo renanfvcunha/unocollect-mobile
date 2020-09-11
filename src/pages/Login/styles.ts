@@ -36,22 +36,35 @@ const styles = StyleSheet.create({
   loginBox: {
     width: '75%',
     backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 32,
     paddingHorizontal: 16,
     borderRadius: 16,
   },
-  textInput: {
+  inputName: {
     flexDirection: 'row',
+    alignItems: 'baseline',
+    marginBottom: 4,
+  },
+  inputNameLogin: {
+    color: 'rgba(56, 53, 53, 0.5)',
+    marginLeft: 8,
+    fontSize: 20,
+  },
+  inputNamePass: {
+    color: '#ffb855',
+    marginLeft: 8,
+    fontSize: 20,
+  },
+  textInput: {
     width: '100%',
     marginBottom: 32,
+    marginHorizontal: 4,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(56, 53, 53, 0.5)',
   },
   input: {
     fontSize: 20,
-    marginLeft: 12,
   },
   subButton: {
     width: '50%',

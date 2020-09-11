@@ -26,6 +26,7 @@ export interface Fill {
 export interface Value {
   fieldId?: number;
   value: string;
+  required?: boolean;
 }
 
 export interface Img {

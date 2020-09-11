@@ -12,6 +12,7 @@ import {
   NativeSyntheticEvent,
   ActivityIndicator,
 } from 'react-native';
+import { RadioButton, Checkbox } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -24,7 +25,7 @@ import PropTypes from 'prop-types';
 
 import styles from './styles';
 import { Form, Field } from '../../store/modules/forms/types';
-import { Img, Fill as FillType } from '../../store/modules/fills/types';
+import { Img, Fill as FillType, Value } from '../../store/modules/fills/types';
 import { ApplicationState } from '../../store';
 import {
   addFillRequest,
@@ -32,16 +33,12 @@ import {
 } from '../../store/modules/fills/actions';
 import squaresTop from '../../../assets/squaresTop.png';
 import squaresBottom from '../../../assets/squaresBottom.png';
+import tron from '../../config/ReactotronConfig';
 
 interface IForm {
   route: {
     params: Form;
   };
-}
-
-interface Values {
-  fieldId?: number;
-  value: string;
 }
 
 interface IFill {
@@ -66,7 +63,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
   const success = useSelector((state: ApplicationState) => state.fills.success);
 
   const [images, setImages] = useState<Img[]>([]);
-  const [formValues, setFormValues] = useState<Values[]>([]);
+  const [formValues, setFormValues] = useState<Value[]>([]);
 
   const removeFill = useCallback(async () => {
     if (success && form.fill?.key) {
@@ -166,6 +163,67 @@ const Fill: React.FC<IForm> = ({ route }) => {
     }
   }
 
+  const handleCheckedRadio = (i: number, option: string) => {
+    if (!form.fill?.key) {
+      const newValue = [...formValues];
+
+      const value = {
+        ...newValue[i],
+        value: option,
+      };
+
+      newValue[i] = value;
+
+      setFormValues(newValue);
+    }
+  };
+
+  const handleCheckedBox = (i: number, option: string, actualValue: string) => {
+    if (!form.fill?.key) {
+      let aux: string[] = [];
+      if (actualValue) {
+        aux = actualValue.split(', ');
+      }
+
+      const optionExists = aux.find((item) => item === option);
+
+      if (optionExists) {
+        const auxIndex = aux.findIndex((item) => item === option);
+        aux.splice(auxIndex, 1);
+      } else {
+        aux.push(option);
+      }
+
+      const auxStr = aux.join(', ');
+
+      const newValue = [...formValues];
+
+      const value = {
+        ...newValue[i],
+        value: auxStr,
+      };
+
+      newValue[i] = value;
+
+      setFormValues(newValue);
+    }
+  };
+
+  const checkedBox = (option: string, actualValue: string) => {
+    let aux: string[] = [];
+    if (actualValue) {
+      aux = actualValue.split(', ');
+    }
+
+    const optionExists = aux.find((item) => item === option);
+
+    if (optionExists) {
+      return true;
+    }
+
+    return false;
+  };
+
   const handleChangeValue = (
     i: number,
     e: NativeSyntheticEvent<TextInputChangeEventData>,
@@ -195,13 +253,29 @@ const Fill: React.FC<IForm> = ({ route }) => {
    * Submissão do formulário
    */
   const handleSubmit = () => {
+    /* Verificando se os campos obrigatórios estão preenchidos. */
+    const emptyRequired = formValues.findIndex(
+      (value) => value.required && value.value === '',
+    );
+
+    if (emptyRequired !== -1) {
+      Alert.alert(
+        'Ops...',
+        'Verifique se preencheu todos os campos obrigatórios. (marcados com *)',
+      );
+      return;
+    }
+
     const jsonData = {
       ...form,
       fill: {
-        key: generateFillKey(),
+        key: form.fill?.key || generateFillKey(),
         latitude,
         longitude,
-        formValues,
+        formValues: formValues.map((value) => ({
+          fieldId: value.fieldId,
+          value: value.value,
+        })),
         date: new Date(),
         images,
       },
@@ -242,6 +316,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
               });
             }
           }
+
           dispatch(addFillRequest(submit, String(form.id)));
         } else {
           /**
@@ -326,18 +401,117 @@ const Fill: React.FC<IForm> = ({ route }) => {
       formValues.push({
         fieldId: form.fields[i].id,
         value: '',
+        required: form.fields[i].required,
       });
 
       fields.push(
-        <View key={form.fields[i].id} style={styles.textInput}>
-          <TextInput
-            style={styles.input}
-            placeholder={form.fields[i].name}
-            placeholderTextColor="#ffb855"
-            value={formValues[i].value}
-            onChange={(e) => handleChangeValue(i, e)}
-          />
-          <Text style={styles.inputDesc}>{form.fields[i].description}</Text>
+        <View key={form.fields[i].id}>
+          {form.fields[i].type === 'text' ? (
+            <View style={styles.textInput}>
+              <View style={styles.inputNameAndDesc}>
+                <Text style={styles.inputName}>
+                  {form.fields[i].name + (form.fields[i].required ? ' *' : '')}
+                </Text>
+                {form.fields[i].description ? (
+                  <Text style={styles.inputDesc}>
+                    ({form.fields[i].description})
+                  </Text>
+                ) : (
+                  <View />
+                )}
+              </View>
+              <TextInput
+                style={styles.input}
+                placeholderTextColor="#ffb855"
+                value={formValues[i].value}
+                onChange={(e) => handleChangeValue(i, e)}
+              />
+            </View>
+          ) : (
+            <View />
+          )}
+
+          {form.fields[i].type === 'radio' ? (
+            <View style={styles.textInput}>
+              <View style={styles.inputNameAndDesc}>
+                <Text style={styles.inputName}>
+                  {form.fields[i].name + (form.fields[i].required ? ' *' : '')}
+                </Text>
+                {form.fields[i].description ? (
+                  <Text style={styles.inputDesc}>
+                    ({form.fields[i].description})
+                  </Text>
+                ) : (
+                  <View />
+                )}
+              </View>
+              {form.fields[i].options?.map((option) => (
+                <View
+                  key={option}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'baseline',
+                  }}
+                >
+                  <RadioButton
+                    value={option}
+                    status={
+                      formValues[i].value === option ? 'checked' : 'unchecked'
+                    }
+                    color="#ffb855"
+                    onPress={() => handleCheckedRadio(i, option)}
+                  />
+                  <Text>{option}</Text>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <View />
+          )}
+
+          {form.fields[i].type === 'checkbox' ? (
+            <View style={styles.textInput}>
+              <View style={styles.inputNameAndDesc}>
+                <Text style={styles.inputName}>
+                  {form.fields[i].name + (form.fields[i].required ? ' *' : '')}
+                </Text>
+                {form.fields[i].description ? (
+                  <Text style={styles.inputDesc}>
+                    ({form.fields[i].description})
+                  </Text>
+                ) : (
+                  <View />
+                )}
+              </View>
+              {form.fields[i].options?.map((option) => (
+                <View
+                  key={option}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'baseline',
+                    justifyContent: 'flex-start',
+                  }}
+                >
+                  <Checkbox
+                    status={
+                      checkedBox(option, formValues[i].value)
+                        ? 'checked'
+                        : 'unchecked'
+                    }
+                    color="#ffb855"
+                    onPress={() =>
+                      handleCheckedBox(i, option, formValues[i].value)
+                    }
+                  />
+                  <Text>{option}</Text>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <View />
+          )}
         </View>,
       );
 
@@ -450,6 +624,9 @@ Fill.propTypes = {
           id: PropTypes.number.isRequired,
           name: PropTypes.string.isRequired,
           description: PropTypes.string,
+          type: PropTypes.string.isRequired,
+          options: PropTypes.arrayOf(PropTypes.string.isRequired),
+          required: PropTypes.bool.isRequired,
         }).isRequired,
       ).isRequired,
       fill: PropTypes.shape({

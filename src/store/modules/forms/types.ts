@@ -29,9 +29,12 @@ export interface Form {
 }
 
 export interface Field {
-  id?: number;
-  name?: string;
+  id: number;
+  name: string;
   description?: string | null;
+  type: string;
+  options?: string[] | null;
+  required: boolean;
 }
 
 /**
