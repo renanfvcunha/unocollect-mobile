@@ -7,6 +7,7 @@ import { AxiosResponse } from 'axios';
 import api from '../../../services/api';
 import { AuthTypes, User } from './types';
 import { loginSuccess, loginFailure } from './actions';
+import swAlert from '../../../utils/alert';
 
 interface Payload extends AnyAction {
   payload: {
@@ -37,13 +38,15 @@ export function* login({ payload }: Payload): SagaIterator {
   } catch (err) {
     if (err.response) {
       if (Platform.OS === 'web') {
-        alert(err.response.data.msg);
+        swAlert('error', 'Erro', err.response.data.msg);
       } else {
         Alert.alert('Erro', err.response.data.msg);
       }
     } else if (err.message === 'Network Error') {
       if (Platform.OS === 'web') {
-        alert(
+        swAlert(
+          'error',
+          'Erro',
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         );
       } else {
@@ -53,7 +56,7 @@ export function* login({ payload }: Payload): SagaIterator {
         );
       }
     } else if (Platform.OS === 'web') {
-      alert(err);
+      swAlert('error', 'Erro', err);
     } else {
       Alert.alert('Erro', err);
     }

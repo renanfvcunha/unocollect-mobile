@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Routes from './routes';
 import { ApplicationState } from './store';
 import { addUserLocation } from './store/modules/fills/actions';
+import swAlert from './utils/alert';
 
 const Auth: React.FC = () => {
   const logged = useSelector((state: ApplicationState) => state.auth.logged);
@@ -23,7 +24,7 @@ const Auth: React.FC = () => {
           (loc) => {
             setLocation([loc.coords.latitude, loc.coords.longitude]);
           },
-          (err) => alert(err.message),
+          (err) => swAlert('error', '', `Erro de localização: ${err.message}`),
           {
             enableHighAccuracy: true,
             timeout: 30000,

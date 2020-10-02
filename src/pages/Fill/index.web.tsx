@@ -27,6 +27,7 @@ import {
 } from '../../store/modules/fills/actions';
 import squaresTop from '../../../assets/squaresTop.png';
 import squaresBottom from '../../../assets/squaresBottom.png';
+import swAlert from '../../utils/alert';
 
 interface IForm {
   route: {
@@ -74,17 +75,25 @@ const Fill: React.FC<IForm> = ({ route }) => {
   };
 
   const removeImage = (i: number) => {
-    const conf = confirm('Deseja remover esta imagem?');
+    swAlert(
+      'warning',
+      'Aviso',
+      'Deseja remover esta imagem?',
+      'REMOVER',
+      true,
+      undefined,
+      '#f44336',
+    ).then((result) => {
+      if (result.isConfirmed) {
+        const removedImageUrl = [...imagesUrl];
+        removedImageUrl.splice(i, 1);
+        setImagesUrl(removedImageUrl);
 
-    if (conf) {
-      const removedImageUrl = [...imagesUrl];
-      removedImageUrl.splice(i, 1);
-      setImagesUrl(removedImageUrl);
-
-      const removedImage = [...images];
-      removedImage.splice(i, 1);
-      setImages(removedImage);
-    }
+        const removedImage = [...images];
+        removedImage.splice(i, 1);
+        setImages(removedImage);
+      }
+    });
   };
 
   const handleCheckedRadio = (i: number, option: string) => {
@@ -174,9 +183,12 @@ const Fill: React.FC<IForm> = ({ route }) => {
     );
 
     if (emptyRequired !== -1) {
-      alert(
+      swAlert(
+        'warning',
+        'Ops...',
         'Verifique se preencheu todos os campos obrigatórios. (marcados com *)',
       );
+
       return;
     }
 

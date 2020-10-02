@@ -5,6 +5,7 @@ import { Alert, Platform } from 'react-native';
 import api from '../../../services/api';
 import { FormsTypes } from './types';
 import { getFormsSuccess, getFormsFailure } from './actions';
+import swAlert from '../../../utils/alert';
 
 export function* getForms(): SagaIterator {
   try {
@@ -14,13 +15,15 @@ export function* getForms(): SagaIterator {
   } catch (err) {
     if (err.response) {
       if (Platform.OS === 'web') {
-        alert(err.response.data.msg);
+        swAlert('error', 'Erro', err.response.data.msg);
       } else {
         Alert.alert('Erro', err.response.data.msg);
       }
     } else if (err.message === 'Network Error') {
       if (Platform.OS === 'web') {
-        alert(
+        swAlert(
+          'error',
+          'Erro',
           'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
         );
       } else {
@@ -30,7 +33,7 @@ export function* getForms(): SagaIterator {
         );
       }
     } else if (Platform.OS === 'web') {
-      alert(err);
+      swAlert('error', 'Erro', err);
     } else {
       Alert.alert('Erro', err);
     }

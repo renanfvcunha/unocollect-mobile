@@ -26,6 +26,7 @@ import { logout } from '../../store/modules/auth/actions';
 import { getFormsRequest } from '../../store/modules/forms/actions';
 import squaresTop from '../../../assets/squaresTop.png';
 import squaresBottom from '../../../assets/squaresBottom.png';
+import swAlert from '../../utils/alert';
 
 interface IFill {
   id?: number;
@@ -57,11 +58,19 @@ const Home: React.FC = () => {
 
   const handleLogout = () => {
     if (Platform.OS === 'web') {
-      const conf = confirm('Deseja sair?');
-
-      if (conf) {
-        dispatch(logout());
-      }
+      swAlert(
+        'question',
+        '',
+        'Deseja sair da aplicação?',
+        'SAIR',
+        true,
+        'VOLTAR',
+        '#f44336',
+      ).then((result) => {
+        if (result.isConfirmed) {
+          dispatch(logout());
+        }
+      });
     } else {
       Alert.alert(
         'Aviso',
@@ -154,7 +163,11 @@ const Home: React.FC = () => {
             <Text style={styles.refreshButtonText}>Atualizar</Text>
           </TouchableOpacity>
 
-          <Text style={styles.title}>Preenchimentos a enviar:</Text>
+          {Platform.OS !== 'web' ? (
+            <Text style={styles.title}>Preenchimentos a enviar:</Text>
+          ) : (
+            <View />
+          )}
 
           {formsToSend.length !== 0 ? (
             formsToSend.map((form) => (
@@ -169,18 +182,22 @@ const Home: React.FC = () => {
             ))
           ) : (
             <Text style={styles.noFormText}>
-              Não há preenchimentos pendentes.
+              {Platform.OS !== 'web' ? 'Não há preenchimentos pendentes.' : ''}
             </Text>
           )}
 
-          <TouchableOpacity
-            style={styles.refreshButton}
-            activeOpacity={0.5}
-            onPress={pendentForms}
-          >
-            <MdIcon name="refresh" size={24} color="#fff" />
-            <Text style={styles.refreshButtonText}>Atualizar</Text>
-          </TouchableOpacity>
+          {Platform.OS !== 'web' ? (
+            <TouchableOpacity
+              style={styles.refreshButton}
+              activeOpacity={0.5}
+              onPress={pendentForms}
+            >
+              <MdIcon name="refresh" size={24} color="#fff" />
+              <Text style={styles.refreshButtonText}>Atualizar</Text>
+            </TouchableOpacity>
+          ) : (
+            <View />
+          )}
 
           <TouchableOpacity
             style={styles.logoutButton}
