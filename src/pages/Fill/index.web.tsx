@@ -17,7 +17,7 @@ import { MaterialIcons as MdIcon } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import PropTypes from 'prop-types';
 
-import styles from './styles';
+import { styles, htmlStyles } from './styles';
 import { Form } from '../../store/modules/forms/types';
 import { Value } from '../../store/modules/fills/types';
 import { ApplicationState } from '../../store';
@@ -417,13 +417,20 @@ const Fill: React.FC<IForm> = ({ route }) => {
               <View />
             )}
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.subButton}
               activeOpacity={0.5}
               onPress={handleSubmit}
             >
               <Text style={styles.subButtonText}>Enviar</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            <button
+              type="button"
+              style={htmlStyles.subButton}
+              onClick={handleSubmit}
+            >
+              <span style={htmlStyles.subButtonText}>Enviar</span>
+            </button>
           </View>
         </View>
       </ScrollView>

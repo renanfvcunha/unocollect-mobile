@@ -26,7 +26,7 @@ import { MaterialIcons as MdIcon } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import PropTypes from 'prop-types';
 
-import styles from './styles';
+import { styles } from './styles';
 import { Form, Field } from '../../store/modules/forms/types';
 import { Img, Fill as FillType, Value } from '../../store/modules/fills/types';
 import { ApplicationState } from '../../store';

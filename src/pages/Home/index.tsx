@@ -18,7 +18,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import styles from './styles';
+import { styles, htmlStyles } from './styles';
 import { ApplicationState } from '../../store';
 import { Field } from '../../store/modules/forms/types';
 import { Fill } from '../../store/modules/fills/types';
@@ -132,17 +132,17 @@ const Home: React.FC = () => {
 
           {forms.length !== 0 ? (
             forms.map((form) => (
-              <TouchableOpacity
+              <button
                 key={form.id}
-                style={styles.formBox}
-                onPress={() => nav.navigate('Fill', form)}
-                activeOpacity={0.5}
+                type="button"
+                style={htmlStyles.formBox}
+                onClick={() => nav.navigate('Fill', form)}
               >
-                <Text style={styles.formTitle}>{form.title}</Text>
-                <Text style={styles.formDescription}>
-                  {form.description ? form.description : 'Sem descrição'}
-                </Text>
-              </TouchableOpacity>
+                <span style={htmlStyles.formTitle}>{form.title}</span>
+                <span style={htmlStyles.formDescription}>
+                  {form.description}
+                </span>
+              </button>
             ))
           ) : (
             <Text style={styles.noFormText}>Nenhum formulário.</Text>
@@ -199,14 +199,25 @@ const Home: React.FC = () => {
             <View />
           )}
 
-          <TouchableOpacity
-            style={styles.logoutButton}
-            activeOpacity={0.5}
-            onPress={handleLogout}
-          >
-            <McIcon name="logout" size={24} color="#fff" />
-            <Text style={styles.logoutButtonText}>Sair</Text>
-          </TouchableOpacity>
+          {Platform.OS === 'web' ? (
+            <button
+              type="button"
+              style={htmlStyles.logoutButton}
+              onClick={handleLogout}
+            >
+              <McIcon name="logout" size={24} color="#fff" />
+              <span style={htmlStyles.logoutButtonText}>Sair</span>
+            </button>
+          ) : (
+            <TouchableOpacity
+              style={styles.logoutButton}
+              activeOpacity={0.5}
+              onPress={handleLogout}
+            >
+              <McIcon name="logout" size={24} color="#fff" />
+              <Text style={styles.logoutButtonText}>Sair</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
     </>

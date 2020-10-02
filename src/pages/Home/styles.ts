@@ -1,6 +1,14 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+interface HTMLStyles {
+  logoutButton: React.CSSProperties;
+  logoutButtonText: React.CSSProperties;
+  formBox: React.CSSProperties;
+  formTitle: React.CSSProperties;
+  formDescription: React.CSSProperties;
+}
+
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -70,7 +78,7 @@ const styles = StyleSheet.create({
   refreshButton: {
     width: '50%',
     flexDirection: 'row',
-    alignItems: 'baseline',
+    alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
     backgroundColor: '#2196f3',
@@ -88,7 +96,7 @@ const styles = StyleSheet.create({
   logoutButton: {
     width: '50%',
     flexDirection: 'row',
-    alignItems: 'baseline',
+    alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
     backgroundColor: '#f44336',
@@ -105,4 +113,48 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export const htmlStyles: HTMLStyles = {
+  logoutButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '50%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    backgroundColor: '#f44336',
+    border: 0,
+    borderRadius: 16,
+    padding: '16px 0',
+    marginTop: 24,
+    marginBottom: 16,
+  },
+  logoutButtonText: {
+    color: '#fff',
+    textTransform: 'uppercase',
+    fontSize: 16,
+    marginLeft: 16,
+  },
+  formBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginTop: 12,
+    backgroundColor: '#ffb855',
+    width: '100%',
+    padding: 12,
+    border: 0,
+    boxShadow: '4px 4px 8px',
+    borderRadius: 32,
+  },
+  formTitle: {
+    color: '#fff',
+    paddingLeft: 8,
+    fontSize: 20,
+    fontWeight: 700,
+  },
+  formDescription: {
+    paddingTop: 8,
+    paddingLeft: 8,
+    fontSize: 16,
+    color: '#393737',
+  },
+};

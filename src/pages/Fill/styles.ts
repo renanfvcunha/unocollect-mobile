@@ -1,6 +1,11 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+interface HTMLStyles {
+  subButton: React.CSSProperties;
+  subButtonText: React.CSSProperties;
+}
+
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -127,4 +132,24 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export const htmlStyles: HTMLStyles = {
+  subButton: {
+    width: '50%',
+    alignItems: 'center',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: -25,
+    backgroundColor: '#ffb855',
+    border: 0,
+    borderRadius: 8,
+    padding: '8px 12px',
+    marginTop: 24,
+    marginBottom: 8,
+  },
+  subButtonText: {
+    color: '#393737',
+    textTransform: 'uppercase',
+    fontSize: 18,
+    fontWeight: 700,
+  },
+};
