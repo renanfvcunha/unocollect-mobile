@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -55,24 +56,32 @@ const Home: React.FC = () => {
   };
 
   const handleLogout = () => {
-    Alert.alert(
-      'Aviso',
-      'Se houver preenchimentos pendentes eles serão apagados. Deseja sair?',
-      [
-        {
-          text: 'Voltar',
-          style: 'cancel',
-        },
-        {
-          text: 'Sair',
-          style: 'destructive',
-          onPress: async () => {
-            await removeFills();
-            dispatch(logout());
+    if (Platform.OS === 'web') {
+      const conf = confirm('Deseja sair?');
+
+      if (conf) {
+        dispatch(logout());
+      }
+    } else {
+      Alert.alert(
+        'Aviso',
+        'Se houver preenchimentos pendentes eles serão apagados. Deseja sair?',
+        [
+          {
+            text: 'Voltar',
+            style: 'cancel',
           },
-        },
-      ],
-    );
+          {
+            text: 'Sair',
+            style: 'destructive',
+            onPress: async () => {
+              await removeFills();
+              dispatch(logout());
+            },
+          },
+        ],
+      );
+    }
   };
 
   const pendentForms = async () => {

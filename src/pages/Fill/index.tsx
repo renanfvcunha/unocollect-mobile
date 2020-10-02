@@ -11,15 +11,18 @@ import {
   TextInputChangeEventData,
   NativeSyntheticEvent,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { RadioButton, Checkbox } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-community/async-storage';
-import { launchCameraAsync, MediaTypeOptions } from 'expo-image-picker';
-import Constants from 'expo-constants';
+import {
+  requestCameraRollPermissionsAsync,
+  launchCameraAsync,
+  MediaTypeOptions,
+} from 'expo-image-picker';
 import { MaterialIcons as MdIcon } from '@expo/vector-icons';
-import { askAsync, CAMERA_ROLL } from 'expo-permissions';
 import { LinearGradient } from 'expo-linear-gradient';
 import PropTypes from 'prop-types';
 
@@ -33,7 +36,6 @@ import {
 } from '../../store/modules/fills/actions';
 import squaresTop from '../../../assets/squaresTop.png';
 import squaresBottom from '../../../assets/squaresBottom.png';
-import tron from '../../config/ReactotronConfig';
 
 interface IForm {
   route: {
@@ -521,8 +523,8 @@ const Fill: React.FC<IForm> = ({ route }) => {
 
   useEffect(() => {
     const getPermission = async () => {
-      if (Constants.platform?.ios) {
-        const { status } = await askAsync(CAMERA_ROLL);
+      if (Platform.OS !== 'web') {
+        const { status } = await requestCameraRollPermissionsAsync();
 
         if (status !== 'granted') {
           Alert.alert('Erro', 'Precisamos de acesso à câmera para continuar.');

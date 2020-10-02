@@ -28,24 +28,6 @@ const reducer: Reducer<FormsState> = (state = INITIAL_STATE, action) => {
         error: true,
       };
 
-    case FormsTypes.GET_FORM_REQUEST:
-      return { ...state, loading: true, error: false };
-
-    case FormsTypes.GET_FORM_SUCCESS:
-      return {
-        ...state,
-        form: action.payload.data,
-        loading: false,
-        error: false,
-      };
-
-    case FormsTypes.GET_FORM_FAILURE:
-      return {
-        ...state,
-        loading: false,
-        error: true,
-      };
-
     default:
       return state;
   }

@@ -1,5 +1,6 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
-import { Alert } from 'react-native';
+import { SagaIterator } from 'redux-saga';
+import { Alert, Platform } from 'react-native';
 import { AnyAction } from 'redux';
 import { AxiosResponse } from 'axios';
 
@@ -19,7 +20,7 @@ interface Response {
   user: User;
 }
 
-export function* login({ payload }: Payload) {
+export function* login({ payload }: Payload): SagaIterator {
   try {
     const { username, password } = payload;
 
@@ -35,12 +36,24 @@ export function* login({ payload }: Payload) {
     yield put(loginSuccess(token, user));
   } catch (err) {
     if (err.response) {
-      Alert.alert('Erro', err.response.data.msg);
+      if (Platform.OS === 'web') {
+        alert(err.response.data.msg);
+      } else {
+        Alert.alert('Erro', err.response.data.msg);
+      }
     } else if (err.message === 'Network Error') {
-      Alert.alert(
-        'Erro',
-        'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
-      );
+      if (Platform.OS === 'web') {
+        alert(
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        );
+      } else {
+        Alert.alert(
+          'Erro',
+          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.',
+        );
+      }
+    } else if (Platform.OS === 'web') {
+      alert(err);
     } else {
       Alert.alert('Erro', err);
     }

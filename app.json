@@ -2,7 +2,7 @@
   "expo": {
     "name": "Uno Collect",
     "slug": "uno-collect",
-    "version": "1.0.6",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/logoUnoCollect.png",
     "splash": {
@@ -24,7 +24,7 @@
     },
     "android": {
       "package": "com.unocomunicacao.unocollect",
-      "versionCode": 4
+      "versionCode": 5
     }
   }
 }

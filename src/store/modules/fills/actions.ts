@@ -11,8 +11,7 @@ export const addUserLocation = (latitude: number, longitude: number): Action =>
 export const addFillRequest = (data: FormData, formId: string): Action =>
   action(FillsTypes.ADD_FILL_REQUEST, { data, formId });
 
-export const addFillSuccess = (msg: string): Action =>
-  action(FillsTypes.ADD_FILL_SUCCESS, { msg });
+export const addFillSuccess = (): Action => action(FillsTypes.ADD_FILL_SUCCESS);
 
 export const addFillFailure = (): Action => action(FillsTypes.ADD_FILL_FAILURE);
 
