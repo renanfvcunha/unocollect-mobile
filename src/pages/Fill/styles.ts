@@ -145,6 +145,7 @@ export const htmlStyles: HTMLStyles = {
     padding: '8px 12px',
     marginTop: 24,
     marginBottom: 8,
+    cursor: 'pointer',
   },
   subButtonText: {
     color: '#393737',

@@ -114,6 +114,30 @@ export const styles = StyleSheet.create({
 });
 
 export const htmlStyles: HTMLStyles = {
+  formBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginTop: 12,
+    backgroundColor: '#ffb855',
+    width: '100%',
+    padding: 12,
+    border: 0,
+    boxShadow: '4px 4px 8px',
+    borderRadius: 32,
+    cursor: 'pointer',
+  },
+  formTitle: {
+    color: '#fff',
+    paddingLeft: 8,
+    fontSize: 20,
+    fontWeight: 700,
+  },
+  formDescription: {
+    paddingTop: 8,
+    paddingLeft: 8,
+    fontSize: 16,
+    color: '#393737',
+  },
   logoutButton: {
     display: 'flex',
     flexDirection: 'row',
@@ -127,34 +151,12 @@ export const htmlStyles: HTMLStyles = {
     padding: '16px 0',
     marginTop: 24,
     marginBottom: 16,
+    cursor: 'pointer',
   },
   logoutButtonText: {
     color: '#fff',
     textTransform: 'uppercase',
     fontSize: 16,
     marginLeft: 16,
-  },
-  formBox: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: 12,
-    backgroundColor: '#ffb855',
-    width: '100%',
-    padding: 12,
-    border: 0,
-    boxShadow: '4px 4px 8px',
-    borderRadius: 32,
-  },
-  formTitle: {
-    color: '#fff',
-    paddingLeft: 8,
-    fontSize: 20,
-    fontWeight: 700,
-  },
-  formDescription: {
-    paddingTop: 8,
-    paddingLeft: 8,
-    fontSize: 16,
-    color: '#393737',
   },
 };
