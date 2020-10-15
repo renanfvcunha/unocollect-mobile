@@ -6,7 +6,12 @@ import { AxiosResponse } from 'axios';
 
 import api from '../../../services/api';
 import { AuthTypes, User } from './types';
-import { loginSuccess, loginFailure } from './actions';
+import {
+  loginSuccess,
+  loginFailure,
+  checkTokenSuccess,
+  checkTokenFailure,
+} from './actions';
 import swAlert from '../../../utils/alert';
 
 interface Payload extends AnyAction {
@@ -64,6 +69,29 @@ export function* login({ payload }: Payload): SagaIterator {
   }
 }
 
+export function* checkToken(): SagaIterator {
+  try {
+    yield call(api.get, 'checktoken');
+
+    yield put(checkTokenSuccess());
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      yield put(checkTokenSuccess());
+    } else if (err.response) {
+      if (Platform.OS === 'web') {
+        swAlert('error', 'Erro', err.response.data.msg);
+      } else {
+        Alert.alert('Erro', err.response.data.msg);
+      }
+    } else if (Platform.OS === 'web') {
+      swAlert('error', 'Erro', err);
+    } else {
+      Alert.alert('Erro', err);
+    }
+    yield put(checkTokenFailure());
+  }
+}
+
 export function setToken({ payload }: AnyAction): void {
   if (!payload) return;
 
@@ -77,4 +105,5 @@ export function setToken({ payload }: AnyAction): void {
 export default all([
   takeLatest('persist/REHYDRATE', setToken),
   takeLatest(AuthTypes.LOGIN_REQUEST, login),
+  takeLatest(AuthTypes.CHECK_TOKEN_REQUEST, checkToken),
 ]);

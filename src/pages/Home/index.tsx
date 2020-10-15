@@ -22,7 +22,7 @@ import { styles, htmlStyles } from './styles';
 import { ApplicationState } from '../../store';
 import { Field } from '../../store/modules/forms/types';
 import { Fill } from '../../store/modules/fills/types';
-import { logout } from '../../store/modules/auth/actions';
+import { checkTokenRequest, logout } from '../../store/modules/auth/actions';
 import { getFormsRequest } from '../../store/modules/forms/actions';
 import squaresTop from '../../../assets/squaresTop.png';
 import squaresBottom from '../../../assets/squaresBottom.png';
@@ -41,6 +41,10 @@ const Home: React.FC = () => {
   const name = useSelector((state: ApplicationState) => state.auth.user.name);
   const forms = useSelector((state: ApplicationState) => state.forms.forms);
   const loading = useSelector((state: ApplicationState) => state.forms.loading);
+  const invalidToken = useSelector(
+    (state: ApplicationState) => state.auth.invalidToken,
+  );
+
   const [formsToSend, setFormsToSend] = useState<IFill[]>([]);
 
   const dispatch = useDispatch();
@@ -102,6 +106,14 @@ const Home: React.FC = () => {
       setFormsToSend([]);
     }
   };
+
+  useEffect(() => {
+    dispatch(checkTokenRequest());
+
+    if (invalidToken) {
+      dispatch(logout());
+    }
+  }, [dispatch, invalidToken]);
 
   useEffect(() => {
     dispatch(getFormsRequest());

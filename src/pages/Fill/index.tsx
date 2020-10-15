@@ -35,6 +35,7 @@ import {
   addFillRequest,
   setSuccessFalse,
 } from '../../store/modules/fills/actions';
+import { checkTokenRequest, logout } from '../../store/modules/auth/actions';
 import squaresTop from '../../../assets/squaresTop.png';
 import squaresBottom from '../../../assets/squaresBottom.png';
 
@@ -64,6 +65,9 @@ const Fill: React.FC<IForm> = ({ route }) => {
   );
   const loading = useSelector((state: ApplicationState) => state.fills.loading);
   const success = useSelector((state: ApplicationState) => state.fills.success);
+  const invalidToken = useSelector(
+    (state: ApplicationState) => state.auth.invalidToken,
+  );
 
   const [images, setImages] = useState<Img[]>([]);
   const [formValues, setFormValues] = useState<Value[]>([]);
@@ -413,6 +417,14 @@ const Fill: React.FC<IForm> = ({ route }) => {
   }
 
   useEffect(() => {
+    dispatch(checkTokenRequest());
+
+    if (invalidToken) {
+      dispatch(logout());
+    }
+  }, [dispatch, invalidToken]);
+
+  useEffect(() => {
     const getPermission = async () => {
       if (Platform.OS !== 'web') {
         const { status } = await requestCameraRollPermissionsAsync();
@@ -561,14 +573,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
                         )}
                       </View>
                       {field.options?.map((option) => (
-                        <View
-                          key={option}
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            alignItems: 'baseline',
-                          }}
-                        >
+                        <View key={option} style={styles.options}>
                           <RadioButton
                             value={option}
                             status={
@@ -602,7 +607,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
                         )}
                       </View>
                       {field.options?.map((option) => (
-                        <View key={option} style={styles.checkboxes}>
+                        <View key={option} style={styles.options}>
                           <Checkbox
                             status={
                               checkedBox(option, formValues[i].value)

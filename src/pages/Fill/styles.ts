@@ -110,7 +110,7 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     fontSize: 16,
   },
-  checkboxes: {
+  options: {
     flexDirection: 'row',
     alignItems: 'center',
   },

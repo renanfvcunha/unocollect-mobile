@@ -25,6 +25,7 @@ import {
   addFillRequest,
   setSuccessFalse,
 } from '../../store/modules/fills/actions';
+import { checkTokenRequest, logout } from '../../store/modules/auth/actions';
 import squaresTop from '../../../assets/squaresTop.png';
 import squaresBottom from '../../../assets/squaresBottom.png';
 import swAlert from '../../utils/alert';
@@ -47,6 +48,9 @@ const Fill: React.FC<IForm> = ({ route }) => {
   );
   const loading = useSelector((state: ApplicationState) => state.fills.loading);
   const success = useSelector((state: ApplicationState) => state.fills.success);
+  const invalidToken = useSelector(
+    (state: ApplicationState) => state.auth.invalidToken,
+  );
 
   const [images, setImages] = useState<File[]>([]);
   const [imagesUrl, setImagesUrl] = useState<string[]>([]);
@@ -234,6 +238,14 @@ const Fill: React.FC<IForm> = ({ route }) => {
   }
 
   useEffect(() => {
+    dispatch(checkTokenRequest());
+
+    if (invalidToken) {
+      dispatch(logout());
+    }
+  }, [dispatch, invalidToken]);
+
+  useEffect(() => {
     if (success) {
       dispatch(setSuccessFalse());
       nav.reset({
@@ -339,13 +351,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
                       )}
                     </View>
                     {field.options?.map((option) => (
-                      <View
-                        key={option}
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                        }}
-                      >
+                      <View key={option} style={styles.options}>
                         <RadioButton
                           value={option}
                           status={
@@ -379,7 +385,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
                       )}
                     </View>
                     {field.options?.map((option) => (
-                      <View key={option} style={styles.checkboxes}>
+                      <View key={option} style={styles.options}>
                         <Checkbox
                           status={
                             checkedBox(option, formValues[i].value)
