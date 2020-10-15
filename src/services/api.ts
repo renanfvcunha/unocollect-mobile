@@ -8,7 +8,7 @@ if (__DEV__) {
   });
 } else {
   api = axios.create({
-    baseURL: process.env.API_PROD_URL,
+    baseURL: 'https://api.unocollect.com.br',
   });
 }
 

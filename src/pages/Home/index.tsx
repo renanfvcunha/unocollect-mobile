@@ -131,19 +131,34 @@ const Home: React.FC = () => {
           </Text>
 
           {forms.length !== 0 ? (
-            forms.map((form) => (
-              <button
-                key={form.id}
-                type="button"
-                style={htmlStyles.formBox}
-                onClick={() => nav.navigate('Fill', form)}
-              >
-                <span style={htmlStyles.formTitle}>{form.title}</span>
-                <span style={htmlStyles.formDescription}>
-                  {form.description}
-                </span>
-              </button>
-            ))
+            forms.map((form) => {
+              if (Platform.OS === 'web') {
+                return (
+                  <button
+                    key={form.id}
+                    type="button"
+                    style={htmlStyles.formBox}
+                    onClick={() => nav.navigate('Fill', form)}
+                  >
+                    <span style={htmlStyles.formTitle}>{form.title}</span>
+                    <span style={htmlStyles.formDescription}>
+                      {form.description}
+                    </span>
+                  </button>
+                );
+              }
+              return (
+                <TouchableOpacity
+                  key={form.id}
+                  style={styles.formBox}
+                  onPress={() => nav.navigate('Fill', form)}
+                  activeOpacity={0.5}
+                >
+                  <Text style={styles.formTitle}>{form.title}</Text>
+                  <Text style={styles.formDescription}>{form.description}</Text>
+                </TouchableOpacity>
+              );
+            })
           ) : (
             <Text style={styles.noFormText}>Nenhum formulário.</Text>
           )}

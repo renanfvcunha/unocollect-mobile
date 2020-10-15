@@ -94,9 +94,9 @@ export const styles = StyleSheet.create({
   },
   inputNameAndDesc: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     flexWrap: 'wrap',
-    alignItems: 'baseline',
+    alignItems: 'flex-start',
   },
   inputName: {
     fontSize: 16,
@@ -104,12 +104,15 @@ export const styles = StyleSheet.create({
   },
   inputDesc: {
     color: 'rgba(56, 53, 53, 0.5)',
-    marginLeft: 8,
   },
   input: {
     borderColor: 'rgba(56, 53, 53, 0.5)',
     borderBottomWidth: 1,
     fontSize: 16,
+  },
+  checkboxes: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   subButton: {
     width: '50%',

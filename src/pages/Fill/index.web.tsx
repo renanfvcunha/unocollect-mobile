@@ -379,13 +379,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
                       )}
                     </View>
                     {field.options?.map((option) => (
-                      <View
-                        key={option}
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                        }}
-                      >
+                      <View key={option} style={styles.checkboxes}>
                         <Checkbox
                           status={
                             checkedBox(option, formValues[i].value)

@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/bin/node /home/renanfvcunha/.yarn/bin/yarn.js add @types/base64-img -D
+  /usr/bin/node /home/renanfvcunha/.yarn/bin/yarn.js add @types/expo-image-picker-multiple -D
 
 PATH: 
   /home/renanfvcunha/.yarn/bin:/home/renanfvcunha/.config/yarn/global/node_modules/.bin:/home/renanfvcunha/.yarn/bin:/home/renanfvcunha/.config/yarn/global/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/renanfvcunha/flutter/bin:/home/renanfvcunha/flutter/bin
@@ -8,22 +8,22 @@ Yarn version:
   1.22.5
 
 Node version: 
-  12.18.4
+  12.19.0
 
 Platform: 
   linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2fbase64-img: Not found
+  Error: https://registry.yarnpkg.com/@types%2fexpo-image-picker-multiple: Not found
       at Request.params.callback [as _callback] (/home/renanfvcunha/.yarn/lib/cli.js:66988:18)
       at Request.self.callback (/home/renanfvcunha/.yarn/lib/cli.js:140749:22)
-      at Request.emit (events.js:315:20)
+      at Request.emit (events.js:314:20)
       at Request.<anonymous> (/home/renanfvcunha/.yarn/lib/cli.js:141721:10)
-      at Request.emit (events.js:315:20)
+      at Request.emit (events.js:314:20)
       at IncomingMessage.<anonymous> (/home/renanfvcunha/.yarn/lib/cli.js:141643:12)
-      at Object.onceWrapper (events.js:421:28)
-      at IncomingMessage.emit (events.js:327:22)
-      at endReadableNT (_stream_readable.js:1220:12)
+      at Object.onceWrapper (events.js:420:28)
+      at IncomingMessage.emit (events.js:326:22)
+      at endReadableNT (_stream_readable.js:1223:12)
       at processTicksAndRejections (internal/process/task_queues.js:84:21)
 
 npm manifest: 
@@ -45,10 +45,10 @@ npm manifest:
       "@react-navigation/stack": "^5.9.0",
       "axios": "^0.19.2",
       "babel-plugin-inline-dotenv": "^1.6.0",
-      "base64-img": "^1.0.4",
       "expo": "~38.0.8",
       "expo-constants": "~9.1.1",
-      "expo-image-picker": "^9.1.1",
+      "expo-image-picker": "~8.3.0",
+      "expo-image-picker-multiple": "^1.2.4",
       "expo-linear-gradient": "~8.2.1",
       "expo-location": "~8.2.1",
       "expo-permissions": "~9.0.1",
@@ -71,6 +71,8 @@ npm manifest:
       "redux": "^4.0.5",
       "redux-persist": "^6.0.0",
       "redux-saga": "^1.1.3",
+      "sweetalert2": "^10.3.5",
+      "sweetalert2-react-content": "^3.2.0",
       "typesafe-actions": "^5.1.0"
     },
     "devDependencies": {
@@ -1739,14 +1741,6 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.0.tgz#e1ad486e6c54501634c6c397c5c121daa383607c"
     integrity sha512-+G7P8jJmCHr+S+cLfQxygbWhXy+8YTVGzAkpEbcLo2mLoL7tij/VG41QSHACSf5QgYRhMZYHuNc6drJaO0Da+w==
   
-  ajax-request@^1.2.0:
-    version "1.2.3"
-    resolved "https://registry.yarnpkg.com/ajax-request/-/ajax-request-1.2.3.tgz#99fcbec1d6d2792f85fa949535332bd14f5f3790"
-    integrity sha1-mfy+wdbSeS+F+pSVNTMr0U9fN5A=
-    dependencies:
-      file-system "^2.1.1"
-      utils-extend "^1.0.7"
-  
   ajv@^6.10.0, ajv@^6.10.2:
     version "6.12.4"
     resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.4.tgz#0614facc4522127fa713445c6bfd3ebd376e2234"
@@ -2135,14 +2129,6 @@ Lockfile:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
     integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
-  
-  base64-img@^1.0.4:
-    version "1.0.4"
-    resolved "https://registry.yarnpkg.com/base64-img/-/base64-img-1.0.4.tgz#3e22d55d6c74a24553d840d2b1bc12a7db078d35"
-    integrity sha1-PiLVXWx0okVT2EDSsbwSp9sHjTU=
-    dependencies:
-      ajax-request "^1.2.0"
-      file-system "^2.1.0"
   
   base64-js@^1.1.2, base64-js@^1.2.3:
     version "1.3.1"
@@ -3371,12 +3357,21 @@ Lockfile:
       fbjs "1.0.0"
       fontfaceobserver "^2.1.0"
   
-  expo-image-picker@^9.1.1:
-    version "9.1.1"
-    resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-9.1.1.tgz#42abe9deb595fa9f9d8ac0d2ba8aad2cd6f69581"
-    integrity sha512-Etz2OQhRflfx+xFbSdma8QLZsnV/yq0M/yqYlsi3/RLiWAQYM/D/VmRfDDPiG10gm+KX3Xb5iKplNjPrWeTuQg==
+  expo-image-picker-multiple@^1.2.4:
+    version "1.2.4"
+    resolved "https://registry.yarnpkg.com/expo-image-picker-multiple/-/expo-image-picker-multiple-1.2.4.tgz#a108dee2c7fc7f678ba98502d9bb4cd9b7cd3131"
+    integrity sha512-TMiRtuUw42OMyt+MnZwASToSNvkdHpPw7ycGjs82aTxR/nZNtfHw7rBrvZG6IYBiZpGiE20pyI6iVk351Jlepw==
     dependencies:
-      expo-permissions "~9.3.0"
+      expo-media-library "^8.0.0"
+      expo-permissions "^8.0.0"
+      expo-screen-orientation "^1.0.0"
+  
+  expo-image-picker@~8.3.0:
+    version "8.3.0"
+    resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-8.3.0.tgz#5a9daacbc1afa7fdbfd31edb22818524ad0b85e2"
+    integrity sha512-HCF7SumPE4jXH+EhJ19Xw6G8Lxpms1z6Hxdq/kLlzvZGdzH4ZFBqp3NyTO7dtm0dXtjduljpNK7kQfwWtvmIWQ==
+    dependencies:
+      expo-permissions "~9.0.1"
       uuid "7.0.2"
   
   expo-keep-awake@~8.2.1:
@@ -3407,15 +3402,27 @@ Lockfile:
     dependencies:
       invariant "^2.2.4"
   
+  expo-media-library@^8.0.0:
+    version "8.5.0"
+    resolved "https://registry.yarnpkg.com/expo-media-library/-/expo-media-library-8.5.0.tgz#b3364cfaf9458a940c68405ee170f879708d9f4c"
+    integrity sha512-U3bXrSX4SJhyN1tEQCf+M0mxksQ7H8a4UcUUJf5kGwXtSndmll/YvXMVkHjX/dqHPYeRB9o+UDhb+LGrgWJYfg==
+  
+  expo-permissions@^8.0.0:
+    version "8.2.0"
+    resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-8.2.0.tgz#6b23e0c18ca84e34d7b0ffb425d56a3818ac6fd6"
+    integrity sha512-XH+7ybVnIkf6KQeVHM5Q+nyvWbdflKVXfLbU1lBBH25R1s0EBt7wvh9hK1OzCQ8AkvrbpRqsjenqYFD8lgP/sA==
+  
   expo-permissions@~9.0.1:
     version "9.0.1"
     resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-9.0.1.tgz#dc10b58654bbe39bbbed5827369942b01b08055e"
     integrity sha512-CosJgy8XQRN/OFG2JTQDcFxz3XTGi27coCMym/hVXWtQfk0z6PwdRG5IXHfLGuSckwIcgmirrwm2+Zc0X3MmNg==
   
-  expo-permissions@~9.3.0:
-    version "9.3.0"
-    resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-9.3.0.tgz#b90c7e9e411d306c1c7ba2bae18d5c53c201affd"
-    integrity sha512-ylSJZVvEGJVFTKsFrUL2S6gCvFt+/o8TJ3xT4WaMjHe2/2Z7R8ng6NR47Kt54t7XBIV/SZ7DIY9uRiR7TPuNYA==
+  expo-screen-orientation@^1.0.0:
+    version "1.1.1"
+    resolved "https://registry.yarnpkg.com/expo-screen-orientation/-/expo-screen-orientation-1.1.1.tgz#515776e534530efdb716e56ec0c47cf8fb9de82f"
+    integrity sha512-o3RhmidIhVK4lXHVActnO2iD0ZrZKxzWuRrJaTSpRsvRjCabeE74xkpZWPGcEcXhAxEwMaAAizHO8rlJDdrVzw==
+    dependencies:
+      fbjs "1.0.0"
   
   expo-splash-screen@^0.5.0:
     version "0.5.0"
@@ -3658,21 +3665,6 @@ Lockfile:
     integrity sha512-bCg29ictuBaKUwwArK4ouCaqDgLZcysCFLmM/Yn/FDoqndh/9vNuQfXRDvTuXKLxfD/JtZQGKFT8MGcJBK644g==
     dependencies:
       flat-cache "^2.0.1"
-  
-  file-match@^1.0.1:
-    version "1.0.2"
-    resolved "https://registry.yarnpkg.com/file-match/-/file-match-1.0.2.tgz#c9cad265d2c8adf3a81475b0df475859069faef7"
-    integrity sha1-ycrSZdLIrfOoFHWw30dYWQafrvc=
-    dependencies:
-      utils-extend "^1.0.6"
-  
-  file-system@^2.1.0, file-system@^2.1.1:
-    version "2.2.2"
-    resolved "https://registry.yarnpkg.com/file-system/-/file-system-2.2.2.tgz#7d65833e3a2347dcd956a813c677153ed3edd987"
-    integrity sha1-fWWDPjojR9zZVqgTxncVPtPt2Yc=
-    dependencies:
-      file-match "^1.0.1"
-      utils-extend "^1.0.4"
   
   file-uri-to-path@1.0.0:
     version "1.0.0"
@@ -7064,6 +7056,16 @@ Lockfile:
     dependencies:
       has-flag "^4.0.0"
   
+  sweetalert2-react-content@^3.2.0:
+    version "3.2.0"
+    resolved "https://registry.yarnpkg.com/sweetalert2-react-content/-/sweetalert2-react-content-3.2.0.tgz#fbbd219177901ef639b8b685c467e35ff8f28770"
+    integrity sha512-Zd75ZZZh7byFHIppsBl04NrIpqQUyjIazBrCb6NwZIDi7Uv7gbvTGO5+yJqgAzjrY29lXOUOyLmY2riKoc69Pg==
+  
+  sweetalert2@^10.3.5:
+    version "10.3.5"
+    resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-10.3.5.tgz#e5a10ad789163e85ec6031a413b08b20e5aae0a4"
+    integrity sha512-8XBQvW2frWVn0Xs80qyraRXcb3Mg/aKG+9sdVPlzViDIYJfLhMeda3pRuyGzyvrPXbBQ3KRjs+66xKH3kz8/og==
+  
   symbol-observable@1.0.1:
     version "1.0.1"
     resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.1.tgz#8340fc4702c3122df5d22288f88283f513d3fdd4"
@@ -7509,11 +7511,6 @@ Lockfile:
     version "1.0.2"
     resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
     integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
-  
-  utils-extend@^1.0.4, utils-extend@^1.0.6, utils-extend@^1.0.7:
-    version "1.0.8"
-    resolved "https://registry.yarnpkg.com/utils-extend/-/utils-extend-1.0.8.tgz#ccfd7b64540f8e90ee21eec57769d0651cab8a5f"
-    integrity sha1-zP17ZFQPjpDuIe7Fd2nQZRyril8=
   
   utils-merge@1.0.1:
     version "1.0.1"

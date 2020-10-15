@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {
   requestCameraRollPermissionsAsync,
   launchCameraAsync,
+  launchImageLibraryAsync,
   MediaTypeOptions,
 } from 'expo-image-picker';
 import { MaterialIcons as MdIcon } from '@expo/vector-icons';
@@ -85,35 +86,53 @@ const Fill: React.FC<IForm> = ({ route }) => {
 
   const dispatch = useDispatch();
 
-  const pickImage = async () => {
-    if (!form.fill?.key) {
-      try {
-        const result = await launchCameraAsync({
-          mediaTypes: MediaTypeOptions.Images,
-          allowsEditing: true,
-          quality: 1,
-        });
+  const pickImageFromCamera = async () => {
+    try {
+      const result = await launchCameraAsync({
+        mediaTypes: MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
 
-        if (!result.cancelled) {
-          const { uri } = result;
-          const name = uri.split('/').pop();
-          const type = `image/${uri.split('.').pop()}`;
+      if (!result.cancelled) {
+        const { uri } = result;
+        const name = uri.split('/').pop();
+        const type = `image/${uri.split('.').pop()}`;
 
-          const newImage = [...images];
-          if (uri && name && type) {
-            const image = { uri, name, type };
-            newImage.push(image);
-            setImages(newImage);
-          }
+        const newImage = [...images];
+        if (uri && name && type) {
+          const image = { uri, name, type };
+          newImage.push(image);
+          setImages(newImage);
         }
-      } catch (err) {
-        Alert.alert('Erro', err);
       }
-    } else {
-      Alert.alert(
-        'Erro',
-        'Não é possível adicionar imagens em formulários já preenchidos.',
-      );
+    } catch (err) {
+      Alert.alert('Erro', err);
+    }
+  };
+
+  const pickImageFromGallery = async () => {
+    try {
+      const result = await launchImageLibraryAsync({
+        mediaTypes: MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (!result.cancelled) {
+        const { uri } = result;
+        const name = uri.split('/').pop();
+        const type = `image/${uri.split('.').pop()}`;
+
+        const newImage = [...images];
+        if (uri && name && type) {
+          const image = { uri, name, type };
+          newImage.push(image);
+          setImages(newImage);
+        }
+      }
+    } catch (err) {
+      Alert.alert('Erro', err);
     }
   };
 
@@ -148,22 +167,6 @@ const Fill: React.FC<IForm> = ({ route }) => {
       );
     }
   };
-
-  const imagesField = [];
-  if (images) {
-    for (let i = 0; i < images.length; i += 1) {
-      imagesField.push(
-        <View key={i} style={styles.img}>
-          <Image source={{ uri: images[i].uri }} style={styles.imgSelected} />
-          <View style={{ position: 'absolute', right: 0 }}>
-            <TouchableOpacity onPress={() => removeImage(i)}>
-              <MdIcon name="cancel" color="#f44336" size={16} />
-            </TouchableOpacity>
-          </View>
-        </View>,
-      );
-    }
-  }
 
   const handleCheckedRadio = (i: number, option: string) => {
     if (!form.fill?.key) {
@@ -397,125 +400,13 @@ const Fill: React.FC<IForm> = ({ route }) => {
     });
   };
 
-  const fields = [];
-  if (form.fields) {
+  if (form.fields.length !== 0) {
     for (let i = 0; i < form.fields.length; i += 1) {
       formValues.push({
         fieldId: form.fields[i].id,
         value: '',
         required: form.fields[i].required,
       });
-
-      fields.push(
-        <View key={form.fields[i].id}>
-          {form.fields[i].type === 'text' ? (
-            <View style={styles.textInput}>
-              <View style={styles.inputNameAndDesc}>
-                <Text style={styles.inputName}>
-                  {form.fields[i].name + (form.fields[i].required ? ' *' : '')}
-                </Text>
-                {form.fields[i].description ? (
-                  <Text style={styles.inputDesc}>
-                    ({form.fields[i].description})
-                  </Text>
-                ) : (
-                  <View />
-                )}
-              </View>
-              <TextInput
-                style={styles.input}
-                placeholderTextColor="#ffb855"
-                value={formValues[i].value}
-                onChange={(e) => handleChangeValue(i, e)}
-              />
-            </View>
-          ) : (
-            <View />
-          )}
-
-          {form.fields[i].type === 'radio' ? (
-            <View style={styles.textInput}>
-              <View style={styles.inputNameAndDesc}>
-                <Text style={styles.inputName}>
-                  {form.fields[i].name + (form.fields[i].required ? ' *' : '')}
-                </Text>
-                {form.fields[i].description ? (
-                  <Text style={styles.inputDesc}>
-                    ({form.fields[i].description})
-                  </Text>
-                ) : (
-                  <View />
-                )}
-              </View>
-              {form.fields[i].options?.map((option) => (
-                <View
-                  key={option}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'baseline',
-                  }}
-                >
-                  <RadioButton
-                    value={option}
-                    status={
-                      formValues[i].value === option ? 'checked' : 'unchecked'
-                    }
-                    color="#ffb855"
-                    onPress={() => handleCheckedRadio(i, option)}
-                  />
-                  <Text>{option}</Text>
-                </View>
-              ))}
-            </View>
-          ) : (
-            <View />
-          )}
-
-          {form.fields[i].type === 'checkbox' ? (
-            <View style={styles.textInput}>
-              <View style={styles.inputNameAndDesc}>
-                <Text style={styles.inputName}>
-                  {form.fields[i].name + (form.fields[i].required ? ' *' : '')}
-                </Text>
-                {form.fields[i].description ? (
-                  <Text style={styles.inputDesc}>
-                    ({form.fields[i].description})
-                  </Text>
-                ) : (
-                  <View />
-                )}
-              </View>
-              {form.fields[i].options?.map((option) => (
-                <View
-                  key={option}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'baseline',
-                    justifyContent: 'flex-start',
-                  }}
-                >
-                  <Checkbox
-                    status={
-                      checkedBox(option, formValues[i].value)
-                        ? 'checked'
-                        : 'unchecked'
-                    }
-                    color="#ffb855"
-                    onPress={() =>
-                      handleCheckedBox(i, option, formValues[i].value)
-                    }
-                  />
-                  <Text>{option}</Text>
-                </View>
-              ))}
-            </View>
-          ) : (
-            <View />
-          )}
-        </View>,
-      );
 
       formValues.splice(form.fields.length);
     }
@@ -581,15 +472,160 @@ const Fill: React.FC<IForm> = ({ route }) => {
           <TouchableOpacity
             style={styles.addImgBtn}
             activeOpacity={0.5}
-            onPress={pickImage}
+            onPress={() => {
+              if (!form.fill?.key) {
+                Alert.alert('', 'Adicionar Imagem...', [
+                  {
+                    text: 'Da Galeria',
+                    style: 'default',
+                    onPress: () => pickImageFromGallery(),
+                  },
+                  {
+                    text: 'Da Câmera',
+                    style: 'default',
+                    onPress: () => pickImageFromCamera(),
+                  },
+                ]);
+              } else {
+                Alert.alert(
+                  'Erro',
+                  'Não é possível adicionar imagens em formulários já preenchidos.',
+                );
+              }
+            }}
           >
             <MdIcon name="add-a-photo" color="#000" size={24} />
             <Text style={styles.addImgText}>Adicionar Imagem</Text>
           </TouchableOpacity>
-          <View style={styles.imgArr}>{imagesField}</View>
+          <View style={styles.imgArr}>
+            {images.length !== 0 ? (
+              images.map((image, i) => (
+                <View key={image.name} style={styles.img}>
+                  <Image
+                    source={{ uri: image.uri }}
+                    style={styles.imgSelected}
+                  />
+                  <View style={{ position: 'absolute', right: 0 }}>
+                    <TouchableOpacity onPress={() => removeImage(i)}>
+                      <MdIcon name="cancel" color="#f44336" size={16} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ))
+            ) : (
+              <View />
+            )}
+          </View>
 
           <View style={styles.fieldsBox}>
-            {fields}
+            {form.fields.length !== 0 ? (
+              form.fields.map((field, i) => (
+                <View key={field.id}>
+                  {field.type === 'text' ? (
+                    <View style={styles.textInput}>
+                      <View style={styles.inputNameAndDesc}>
+                        <Text style={styles.inputName}>
+                          {field.name + (field.required ? ' *' : '')}
+                        </Text>
+                        {field.description ? (
+                          <Text style={styles.inputDesc}>
+                            ({field.description})
+                          </Text>
+                        ) : (
+                          <View />
+                        )}
+                      </View>
+                      <TextInput
+                        style={styles.input}
+                        placeholderTextColor="#ffb855"
+                        value={formValues[i].value}
+                        onChange={(e) => handleChangeValue(i, e)}
+                      />
+                    </View>
+                  ) : (
+                    <View />
+                  )}
+
+                  {field.type === 'radio' ? (
+                    <View style={styles.textInput}>
+                      <View style={styles.inputNameAndDesc}>
+                        <Text style={styles.inputName}>
+                          {field.name + (field.required ? ' *' : '')}
+                        </Text>
+                        {field.description ? (
+                          <Text style={styles.inputDesc}>
+                            ({field.description})
+                          </Text>
+                        ) : (
+                          <View />
+                        )}
+                      </View>
+                      {field.options?.map((option) => (
+                        <View
+                          key={option}
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'baseline',
+                          }}
+                        >
+                          <RadioButton
+                            value={option}
+                            status={
+                              formValues[i].value === option
+                                ? 'checked'
+                                : 'unchecked'
+                            }
+                            color="#ffb855"
+                            onPress={() => handleCheckedRadio(i, option)}
+                          />
+                          <Text>{option}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  ) : (
+                    <View />
+                  )}
+
+                  {field.type === 'checkbox' ? (
+                    <View style={styles.textInput}>
+                      <View style={styles.inputNameAndDesc}>
+                        <Text style={styles.inputName}>
+                          {field.name + (field.required ? ' *' : '')}
+                        </Text>
+                        {field.description ? (
+                          <Text style={styles.inputDesc}>
+                            ({field.description})
+                          </Text>
+                        ) : (
+                          <View />
+                        )}
+                      </View>
+                      {field.options?.map((option) => (
+                        <View key={option} style={styles.checkboxes}>
+                          <Checkbox
+                            status={
+                              checkedBox(option, formValues[i].value)
+                                ? 'checked'
+                                : 'unchecked'
+                            }
+                            color="#ffb855"
+                            onPress={() =>
+                              handleCheckedBox(i, option, formValues[i].value)
+                            }
+                          />
+                          <Text>{option}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  ) : (
+                    <View />
+                  )}
+                </View>
+              ))
+            ) : (
+              <View />
+            )}
 
             {loading ? (
               <ActivityIndicator

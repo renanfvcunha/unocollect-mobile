@@ -1,11 +1,12 @@
+import { CSSProperties } from 'react';
 import { StyleSheet } from 'react-native';
 
 interface HTMLStyles {
-  logoutButton: React.CSSProperties;
-  logoutButtonText: React.CSSProperties;
-  formBox: React.CSSProperties;
-  formTitle: React.CSSProperties;
-  formDescription: React.CSSProperties;
+  logoutButton: CSSProperties;
+  logoutButtonText: CSSProperties;
+  formBox: CSSProperties;
+  formTitle: CSSProperties;
+  formDescription: CSSProperties;
 }
 
 export const styles = StyleSheet.create({
