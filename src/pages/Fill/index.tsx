@@ -18,7 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
-  requestCameraRollPermissionsAsync,
+  requestMediaLibraryPermissionsAsync,
   launchCameraAsync,
   launchImageLibraryAsync,
   MediaTypeOptions,
@@ -427,7 +427,7 @@ const Fill: React.FC<IForm> = ({ route }) => {
   useEffect(() => {
     const getPermission = async () => {
       if (Platform.OS !== 'web') {
-        const { status } = await requestCameraRollPermissionsAsync();
+        const { status } = await requestMediaLibraryPermissionsAsync();
 
         if (status !== 'granted') {
           Alert.alert('Erro', 'Precisamos de acesso à câmera para continuar.');
