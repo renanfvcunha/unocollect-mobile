@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { requestPermissionsAsync, watchPositionAsync } from 'expo-location';
+import { requestForegroundPermissionsAsync, watchPositionAsync } from 'expo-location';
 import { Alert, Platform } from 'react-native';
 
 import Login from './pages/Login';
@@ -32,7 +32,7 @@ const Auth: React.FC = () => {
           },
         );
       } else {
-        const { status } = await requestPermissionsAsync();
+        const { status } = await requestForegroundPermissionsAsync();
         if (status !== 'granted') {
           Alert.alert(
             'Erro',
@@ -44,7 +44,6 @@ const Auth: React.FC = () => {
         await watchPositionAsync(
           {
             accuracy: 6,
-            enableHighAccuracy: true,
             timeInterval: 30000,
           },
           (loc) => {

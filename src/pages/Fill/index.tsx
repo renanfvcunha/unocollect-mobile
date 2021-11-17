@@ -16,7 +16,7 @@ import {
 import { RadioButton, Checkbox } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import NetInfo from '@react-native-community/netinfo';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   requestMediaLibraryPermissionsAsync,
   launchCameraAsync,

@@ -15,7 +15,7 @@ import {
   MaterialCommunityIcons as McIcon,
   MaterialIcons as MdIcon,
 } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { styles, htmlStyles } from './styles';
