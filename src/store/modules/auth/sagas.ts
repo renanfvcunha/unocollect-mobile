@@ -41,6 +41,7 @@ export function* login({ payload }: Payload): SagaIterator {
 
     yield put(loginSuccess(token, user));
   } catch (err) {
+    console.log(err)
     if (err.response) {
       if (Platform.OS === 'web') {
         swAlert('error', 'Erro', err.response.data.msg);
