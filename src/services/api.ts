@@ -1,15 +1,10 @@
-import axios, { AxiosInstance } from 'axios';
+import axios from 'axios';
 
-let api: AxiosInstance;
-
-if (__DEV__) {
-  api = axios.create({
-    baseURL: process.env.API_DEV_URL,
-  });
-} else {
-  api = axios.create({
-    baseURL: 'https://api.unocollect.com.br',
-  });
-}
+const api = axios.create({
+  baseURL: process.env.API_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
 
 export default api;
